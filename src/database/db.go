@@ -3,27 +3,37 @@ package database
 import (
 	"SadApp/src/models"
 	"fmt"
+	"log"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
+// DB は、データベース接続を保持するためのグローバル変数です。
 var DB *gorm.DB
 
+// Connect はデータベースへの接続を確立する関数です。
 func Connect() {
 	var err error
-	// 接続文字列を設定ファイルから組み立てる
+	// dsn（データソース名）を組み立てます。これには接続情報が含まれます。
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?%s", DBUsername, DBPassword, DBHost, DBPort, DBName, DBParameters)
 
-	// Open the connection to the database
+	// データベースに接続を開きます。
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	// Check for errors in opening the database connection
+	// データベース接続時のエラーをチェックします。
 	if err != nil {
+		// 接続に失敗した場合、プログラムをパニック状態にします。
 		panic("データベースに接続できませんでした。") // "Could not connect to the database."
 	}
 }
 
+// AutoMigrate はデータベースのスキーマを自動的にマイグレーション（更新）する関数です。
 func AutoMigrate() {
-	DB.AutoMigrate(models.User{})
+	// Userモデルを使用して、データベースのスキーマを自動的にマイグレーションします。
+	err := DB.AutoMigrate(models.User{})
+	if err != nil {
+		// マイグレーションに失敗した場合、エラーをログに記録し、プログラムを終了します。
+		log.Fatalf("データベースのマイグレーションに失敗しました: %v", err)
+	}
 }

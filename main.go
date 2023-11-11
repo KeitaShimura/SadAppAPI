@@ -8,17 +8,21 @@ import (
 )
 
 func main() {
-	database.Connect();
-	database.AutoMigrate();
+	// データベースへの接続を確立します。
+	database.Connect()
+	// データベースのスキーマを自動マイグレーションします。
+	database.AutoMigrate()
 
-	// Create a new Fiber app
+	// 新しいFiberアプリケーションのインスタンスを作成します。
 	app := fiber.New()
 
-	// Define a route
+	// ルートパス ('/') に対するルートを定義します。
 	app.Get("/", func(c *fiber.Ctx) error {
+		// リクエストに対して "Hello, World!" というレスポンスを返します。
 		return c.SendString("Hello, World!")
 	})
 
-	// Start the server
+	// サーバーをポート8002で起動します。
+	// 何らかのエラーが発生した場合は、ログに記録してプログラムを終了します。
 	log.Fatal(app.Listen(":8002"))
 }
