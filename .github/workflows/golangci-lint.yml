@@ -14,6 +14,13 @@ jobs:
   golangci:
     name: lint
     runs-on: ubuntu-latest
+    env:
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_PARAMETERS: ${{ secrets.DB_PARAMETERS }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
