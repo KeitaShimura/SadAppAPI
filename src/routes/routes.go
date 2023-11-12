@@ -2,7 +2,6 @@ package routes
 
 import (
 	"SadApp/src/controllers"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -15,5 +14,6 @@ func Setup(app *fiber.App) {
 	user.Post("register", controllers.Register)
 	// ログイン
 	user.Post("login", controllers.Login)
-
+	// ユーザー詳細
+	user.Get("user/:id", controllers.GetUser)
 }

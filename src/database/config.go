@@ -1,8 +1,6 @@
 package database
 
-import (
-	"os"
-)
+import "os"
 
 var (
 	DBUsername   = os.Getenv("DB_USERNAME")   // データベースのユーザー名

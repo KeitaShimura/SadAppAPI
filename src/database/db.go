@@ -3,10 +3,9 @@ package database
 import (
 	"SadApp/src/models"
 	"fmt"
-	"log"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
 )
 
 // DB は、データベース接続を保持するためのグローバル変数です。
