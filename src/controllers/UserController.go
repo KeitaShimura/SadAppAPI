@@ -59,3 +59,39 @@ func UpdateUser(c *fiber.Ctx) error {
 	// 更新されたユーザー情報をJSON形式でレスポンスとして返す
 	return c.JSON(user)
 }
+
+// UpdatePassword 関数は、ユーザーのパスワードを更新するための関数です。
+func UpdatePassword(c *fiber.Ctx) error {
+	// リクエストボディからデータを読み込むためのマップを定義
+	var data map[string]string
+
+	// リクエストボディの解析を試みる。エラーがあれば、それを返す。
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	// パスワードとパスワード確認が一致していない場合、400ステータスコードを返す。
+	if data["password"] != data["password_confirm"] {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "パスワードが一致しません。", // エラーメッセージをJSONで返す
+		})
+	}
+
+	// ミドルウェアを通じて現在のユーザーIDを取得
+	id, _ := middlewares.GetUserId(c)
+
+	// 更新対象のユーザーモデルを作成
+	user := models.User{
+		Id: id,
+	}
+
+	// ユーザーモデルに新しいパスワードを設定
+	user.SetPassword(data["password"])
+
+	// データベースでユーザーの情報を更新
+	database.DB.Model(&user).Updates(&user)
+
+	// 更新されたユーザー情報をJSON形式でレスポンスとして返す
+	return c.JSON(user)
+}

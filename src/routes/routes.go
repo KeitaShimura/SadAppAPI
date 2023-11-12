@@ -28,4 +28,6 @@ func Setup(app *fiber.App) {
 	userAuthenticated.Post("logout", controllers.Logout)
 	// ユーザー情報更新
 	userAuthenticated.Put("user", controllers.UpdateUser)
+	// パスワード更新
+	userAuthenticated.Put("user/password", controllers.UpdatePassword)
 }
