@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"SadApp/src/database"
-	"SadApp/src/models" // モデルを提供するパッケージをインポート
-
+	"SadApp/src/models"           // モデルを提供するパッケージをインポート
 	"github.com/gofiber/fiber/v2" // Fiberフレームワークをインポート
-	"golang.org/x/crypto/bcrypt"  // パスワードの暗号化に使用するパッケージをインポート
+	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt" // パスワードの暗号化に使用するパッケージをインポート
+	"strconv"
+	"time"
 )
 
 // Login 関数は、ユーザーのログイン処理を行う関数です。
@@ -37,6 +39,31 @@ func Login(c *fiber.Ctx) error {
 			"message": "認証に失敗しました。", // 認証失敗のメッセージをJSONで返す
 		})
 	}
+
+	// JWTトークンの生成
+	payload := jwt.StandardClaims{
+		Subject:   strconv.Itoa(int(user.Id)),
+		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+	}
+
+	// JWTトークンを生成し、エラーがあれば処理を返す。
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
+	if err != nil {
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{
+			"message": "認証に失敗しました。",
+		})
+	}
+
+	// クッキーにJWTトークンを設定する。
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
 
 	// 認証が成功したユーザーデータをJSON形式で返す。
 	return c.JSON(user)

@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
@@ -16,6 +17,11 @@ func main() {
 
 	// 新しいFiberアプリケーションのインスタンスを作成します。
 	app := fiber.New()
+
+	app.Use(cors.New(cors.Config{
+		AllowCredentials: true,
+	}))
+
 	// ルート設定をアプリケーションに追加します。
 	routes.Setup(app)
 
