@@ -5,7 +5,6 @@ import (
 	"SadApp/src/models"           // モデルを提供するパッケージをインポート
 	"github.com/gofiber/fiber/v2" // Fiberフレームワークをインポート
 	"github.com/golang-jwt/jwt"
-	"golang.org/x/crypto/bcrypt" // パスワードの暗号化に使用するパッケージをインポート
 	"strconv"
 	"time"
 )
@@ -33,7 +32,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// パスワードが一致するかチェックする。一致しない場合はエラーを返す。
-	if err := bcrypt.CompareHashAndPassword(user.Password, []byte(data["password"])); err != nil {
+	if err := user.ComparePassword(data["password"]); err != nil {
 		c.Status(fiber.StatusBadRequest)
 		return c.JSON(fiber.Map{
 			"message": "認証に失敗しました。", // 認証失敗のメッセージをJSONで返す

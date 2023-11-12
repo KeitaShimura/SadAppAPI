@@ -6,7 +6,6 @@ import (
 	"SadApp/src/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt" // JWTを使用するためのパッケージをインポート
-	"golang.org/x/crypto/bcrypt"
 	"strconv"
 	"time"
 )
@@ -28,15 +27,14 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	// パスワードを暗号化する。
-	password, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 12)
-
 	// Userモデルのインスタンスを作成する。
 	user := models.User{
-		Name:     data["name"],
-		Email:    data["email"],
-		Password: password,
+		Name:  data["name"],
+		Email: data["email"],
 	}
+
+	// ユーザーのパスワードをハッシュ化して保存
+	user.SetPassword(data["password"])
 
 	// データベースにユーザーを保存する。
 	database.DB.Create(&user)
