@@ -2,12 +2,14 @@ package controllers
 
 import (
 	"SadApp/src/database"
+	"SadApp/src/middlewares"
 	"SadApp/src/models"
-	"github.com/gofiber/fiber/v2"
 	"strconv"
+
+	"github.com/gofiber/fiber/v2"
 )
 
-// GetUser 関数は、新しいユーザー詳細を取得するための関数です。
+// GetUser 関数は、ユーザー情報の詳細を取得するための関数です。
 func GetUser(c *fiber.Ctx) error {
 	// ユーザーモデルの新しいインスタンスを作成
 	var user models.User
@@ -22,4 +24,38 @@ func GetUser(c *fiber.Ctx) error {
 
 	// ユーザーのIDと名前のみをJSON形式で返す
 	return c.JSON(fiber.Map{"id": user.Id, "name": user.Name})
+}
+
+// UpdateUser 関数は、ユーザー情報を更新するための関数です。
+func UpdateUser(c *fiber.Ctx) error {
+	// リクエストボディからデータを読み込むためのマップを定義
+	var data map[string]string
+
+	// リクエストボディの解析。エラーがあれば返す
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	// ミドルウェアを通じて現在のユーザーIDを取得
+	id, _ := middlewares.GetUserId(c)
+
+	// 更新するユーザーのデータを取得するためのUserモデルのインスタンスを作成
+	var user models.User
+
+	// データベースからIDに基づいてユーザー情報を取得
+	result := database.DB.Where("id = ?", id).First(&user)
+	if result.Error != nil {
+		// エラーがあれば、そのエラーを返す
+		return result.Error
+	}
+
+	// ユーザーデータを更新
+	user.Name = data["name"]
+	user.Email = data["email"]
+
+	// 更新されたデータをデータベースに保存
+	database.DB.Save(&user)
+
+	// 更新されたユーザー情報をJSON形式でレスポンスとして返す
+	return c.JSON(user)
 }
