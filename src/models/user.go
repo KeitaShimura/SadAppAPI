@@ -4,10 +4,10 @@ import "golang.org/x/crypto/bcrypt"
 
 // User 構造体は、ユーザー情報を表します。
 type User struct {
-	Id       uint   // ユーザーのID
-	Name     string // ユーザーの名前
-	Email    string // ユーザーのメールアドレス
-	Password []byte // ハッシュ化されたパスワード
+	Id       uint   `json:"id"`                  // ユーザーのID
+	Name     string `json:"name"`                // ユーザーの名前
+	Email    string `json:"email" gorm:"unique"` // ユーザーのメールアドレス
+	Password []byte `json:"-"`                   // ハッシュ化されたパスワード
 }
 
 // SetPassword は、与えられたパスワードをハッシュ化してUser構造体に設定します。
