@@ -13,7 +13,7 @@ func main() {
 	database.Connect()
 	// データベースのスキーマを自動マイグレーションします。
 	database.AutoMigrate()
-	
+
 	// 新しいFiberアプリケーションのインスタンスを作成します。
 	app := fiber.New()
 	// ルート設定をアプリケーションに追加します。
