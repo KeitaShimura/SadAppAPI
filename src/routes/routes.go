@@ -14,6 +14,8 @@ func Setup(app *fiber.App) {
 	user.Post("register", controllers.Register)
 	// ログイン
 	user.Post("login", controllers.Login)
+	// ユーザー認証
+	user.Get("user", controllers.GetAuthUser)
 	// ユーザー詳細
 	user.Get("user/:id", controllers.GetUser)
 }
