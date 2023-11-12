@@ -13,4 +13,7 @@ func Setup(app *fiber.App) {
 	user := api.Group("user")
 	// アカウント登録
 	user.Post("register", controllers.Register)
+	// ログイン
+	user.Post("login", controllers.Login)
+
 }

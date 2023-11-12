@@ -1,9 +1,8 @@
 package controllers
 
 import (
-	"SadApp/src/database" // データベースへのアクセスを提供するパッケージをインポート
-	"SadApp/src/models"   // モデルを提供するパッケージをインポート
-
+	"SadApp/src/database"         // データベースへのアクセスを提供するパッケージをインポート
+	"SadApp/src/models"           // モデルを提供するパッケージをインポート
 	"github.com/gofiber/fiber/v2" // Fiberフレームワークをインポート
 	"golang.org/x/crypto/bcrypt"  // パスワードの暗号化に使用するパッケージをインポート
 )
