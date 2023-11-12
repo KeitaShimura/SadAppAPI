@@ -2,6 +2,8 @@ package routes
 
 import (
 	"SadApp/src/controllers"
+	"SadApp/src/middlewares"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -14,10 +16,12 @@ func Setup(app *fiber.App) {
 	user.Post("register", controllers.Register)
 	// ログイン
 	user.Post("login", controllers.Login)
-	// ユーザー認証
-	user.Get("user", controllers.GetAuthUser)
-	// ログアウト
-	user.Post("logout", controllers.Logout)
 	// ユーザー詳細
 	user.Get("user/:id", controllers.GetUser)
+
+	userAuthenticated := user.Use(middlewares.IsAuthenticated)
+	// ユーザー認証
+	userAuthenticated.Get("user", controllers.GetAuthUser)
+	// ログアウト
+	userAuthenticated.Post("logout", controllers.Logout)
 }
