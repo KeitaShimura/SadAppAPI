@@ -66,8 +66,21 @@ func Register(c *fiber.Ctx) error {
 
 	c.Cookie(&cookie)
 
-	// ユーザーデータをJSON形式で返す。
-	return c.JSON(user)
+	// ユーザーデータにトークンを追加したJSONを作成
+	response := struct {
+		Id    uint   `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+		Token string `json:"token"`
+	}{
+		Id:    user.Id,
+		Name:  user.Name,
+		Email: user.Email,
+		Token: token,
+	}
+
+	// 認証が成功したユーザーデータをJSON形式で返す。
+	return c.JSON(response)
 }
 
 // Login 関数は、ユーザーのログイン処理を行う関数です。
@@ -126,8 +139,22 @@ func Login(c *fiber.Ctx) error {
 
 	c.Cookie(&cookie)
 
+	// ユーザーデータにトークンを追加したJSONを作成
+	response := struct {
+		Id    uint   `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+		Token string `json:"token"`
+	}{
+		Id:    user.Id,
+		Name:  user.Name,
+		Email: user.Email,
+		Token: token,
+	}
+
 	// 認証が成功したユーザーデータをJSON形式で返す。
-	return c.JSON(user)
+	return c.JSON(response)
+
 }
 
 func GetAuthUser(c *fiber.Ctx) error {
