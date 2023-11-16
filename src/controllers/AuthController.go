@@ -71,11 +71,13 @@ func Register(c *fiber.Ctx) error {
 		Id    uint   `json:"id"`
 		Name  string `json:"name"`
 		Email string `json:"email"`
+		Bio   string `json:"bio"`
 		Token string `json:"token"`
 	}{
 		Id:    user.Id,
 		Name:  user.Name,
 		Email: user.Email,
+		Bio:   user.Bio,
 		Token: token,
 	}
 
@@ -144,11 +146,13 @@ func Login(c *fiber.Ctx) error {
 		Id    uint   `json:"id"`
 		Name  string `json:"name"`
 		Email string `json:"email"`
+		Bio   string `json:"bio"`
 		Token string `json:"token"`
 	}{
 		Id:    user.Id,
 		Name:  user.Name,
 		Email: user.Email,
+		Bio:   user.Bio,
 		Token: token,
 	}
 

@@ -8,6 +8,7 @@ type User struct {
 	Name     string `json:"name"`                // ユーザーの名前
 	Email    string `json:"email" gorm:"unique"` // ユーザーのメールアドレス
 	Password []byte `json:"-"`                   // ハッシュ化されたパスワード
+	Bio      string `json:"bio" gorm:"nullable"` // ハッシュ化されたパスワード
 }
 
 // SetPassword は、与えられたパスワードをハッシュ化してUser構造体に設定します。
