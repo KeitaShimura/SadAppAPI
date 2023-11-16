@@ -23,7 +23,13 @@ func GetUser(c *fiber.Ctx) error {
 	database.DB.Find(&user)
 
 	// ユーザーのIDと名前のみをJSON形式で返す
-	return c.JSON(fiber.Map{"id": user.Id, "name": user.Name, "bio": user.Bio})
+	return c.JSON(fiber.Map{
+		"id":     user.Id,
+		"name":   user.Name,
+		"bio":    user.Bio,
+		"icon":   user.Icon,
+		"banner": user.Banner,
+	})
 }
 
 // UpdateUser 関数は、ユーザー情報を更新するための関数です。
@@ -53,6 +59,8 @@ func UpdateUser(c *fiber.Ctx) error {
 	user.Name = data["name"]
 	user.Email = data["email"]
 	user.Bio = data["bio"]
+	user.Icon = data["icon"]
+	user.Banner = data["banner"]
 
 	// 更新されたデータをデータベースに保存
 	database.DB.Save(&user)
