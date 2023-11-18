@@ -9,20 +9,30 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// GetUser 関数は、ユーザー情報の詳細を取得するための関数です。
 func GetUser(c *fiber.Ctx) error {
 	// ユーザーモデルの新しいインスタンスを作成
 	var user models.User
 	// リクエストからIDパラメータを取得し、整数型に変換
-	id, _ := strconv.Atoi(c.Params("id"))
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		// IDパラメータの変換エラー処理
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "無効なIDフォーマット"})
+	}
 
 	// 変換されたIDをユーザーモデルのIDに割り当て
 	user.Id = uint(id)
 
 	// 取得したidを使ってユーザーを検索
-	database.DB.Find(&user)
+	result := database.DB.Find(&user)
 
-	// ユーザーのIDと名前のみをJSON形式で返す
+	// ユーザーが見つからなかった場合の処理
+	if result.RowsAffected == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "ユーザーが見つかりません",
+		})
+	}
+
+	// ユーザーの詳細情報をJSON形式で返す
 	return c.JSON(fiber.Map{
 		"id":     user.Id,
 		"name":   user.Name,
