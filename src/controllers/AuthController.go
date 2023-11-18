@@ -68,21 +68,27 @@ func Register(c *fiber.Ctx) error {
 
 	// ユーザーデータにトークンを追加したJSONを作成
 	response := struct {
-		Id     uint   `json:"id"`
-		Name   string `json:"name"`
-		Email  string `json:"email"`
-		Bio    string `json:"bio"`
-		Icon   string `json:"icon"`
-		Banner string `json:"banner"`
-		Token  string `json:"token"`
+		Id        uint   `json:"id"`
+		Name      string `json:"name"`
+		Email     string `json:"email"`
+		Bio       string `json:"bio"`
+		Icon      string `json:"icon"`
+		Banner    string `json:"banner"`
+		Location  string `json:"location"`
+		WibSite   string `json:"website"`
+		BirthDate string `json:"birth_date"`
+		Token     string `json:"token"`
 	}{
-		Id:     user.Id,
-		Name:   user.Name,
-		Email:  user.Email,
-		Bio:    user.Bio,
-		Icon:   user.Icon,
-		Banner: user.Banner,
-		Token:  token,
+		Id:        user.Id,
+		Name:      user.Name,
+		Email:     user.Email,
+		Bio:       user.Bio,
+		Icon:      user.Icon,
+		Banner:    user.Banner,
+		Location:  user.Location,
+		WibSite:   user.WibSite,
+		BirthDate: user.BirthDate,
+		Token:     token,
 	}
 
 	// 認証が成功したユーザーデータをJSON形式で返す。
@@ -147,21 +153,27 @@ func Login(c *fiber.Ctx) error {
 
 	// ユーザーデータにトークンを追加したJSONを作成
 	response := struct {
-		Id     uint   `json:"id"`
-		Name   string `json:"name"`
-		Email  string `json:"email"`
-		Bio    string `json:"bio"`
-		Icon   string `json:"icon"`
-		Banner string `json:"banner"`
-		Token  string `json:"token"`
+		Id        uint   `json:"id"`
+		Name      string `json:"name"`
+		Email     string `json:"email"`
+		Bio       string `json:"bio"`
+		Icon      string `json:"icon"`
+		Banner    string `json:"banner"`
+		Location  string `json:"location"`
+		WibSite   string `json:"website"`
+		BirthDate string `json:"birth_date"`
+		Token     string `json:"token"`
 	}{
-		Id:     user.Id,
-		Name:   user.Name,
-		Email:  user.Email,
-		Bio:    user.Bio,
-		Icon:   user.Icon,
-		Banner: user.Banner,
-		Token:  token,
+		Id:        user.Id,
+		Name:      user.Name,
+		Email:     user.Email,
+		Bio:       user.Bio,
+		Icon:      user.Icon,
+		Banner:    user.Banner,
+		Location:  user.Location,
+		WibSite:   user.WibSite,
+		BirthDate: user.BirthDate,
+		Token:     token,
 	}
 
 	// 認証が成功したユーザーデータをJSON形式で返す。
