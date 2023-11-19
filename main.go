@@ -22,7 +22,6 @@ func main() {
 		AllowOrigins:     "http://localhost:3000", // フロントエンドのオリジンを具体的に指定
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 	}))
-	
 
 	// ルート設定をアプリケーションに追加します。
 	routes.Setup(app)

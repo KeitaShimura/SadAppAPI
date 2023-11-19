@@ -34,14 +34,14 @@ func GetUser(c *fiber.Ctx) error {
 
 	// ユーザーの詳細情報をJSON形式で返す
 	return c.JSON(fiber.Map{
-		"id":     user.Id,
-		"name":   user.Name,
-		"bio":    user.Bio,
-		"location":  user.Location,
-		"website": user.WibSite,
+		"id":         user.Id,
+		"name":       user.Name,
+		"bio":        user.Bio,
+		"location":   user.Location,
+		"website":    user.WibSite,
 		"birth_date": user.Bio,
-		"icon":   user.Icon,
-		"banner": user.Banner,
+		"icon":       user.Icon,
+		"banner":     user.Banner,
 	})
 }
 
