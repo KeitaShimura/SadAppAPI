@@ -4,9 +4,8 @@ import (
 	"SadApp/src/database"
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
-	"strconv"
-
 	"github.com/gofiber/fiber/v2"
+	"strconv"
 )
 
 func Follow(c *fiber.Ctx) error {

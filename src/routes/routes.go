@@ -3,7 +3,6 @@ package routes
 import (
 	"SadApp/src/controllers"
 	"SadApp/src/middlewares"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -18,9 +17,9 @@ func Setup(app *fiber.App) {
 	user.Post("login", controllers.Login)
 	// ユーザー詳細
 	user.Get("user/:id", controllers.GetUser)
-	// フォロワー一覧取得
+	// フォロワー一覧
 	user.Get("followers/:id", controllers.GetFollowers)
-	// フォローしているユーザー一覧取得
+	// フォローしているユーザー一覧
 	user.Get("following/:id", controllers.GetFollowings)
 
 	// IsAuthenticatedミドルウェアを使用して、認証が必要なルートのグループを作成
@@ -35,8 +34,38 @@ func Setup(app *fiber.App) {
 	// パスワード更新
 	userAuthenticated.Put("user/password", controllers.UpdatePassword)
 
-	// フォローする
+	// フォロー
 	userAuthenticated.Post("follow", controllers.Follow)
 	// フォロー解除
 	userAuthenticated.Delete("unfollow/:id", controllers.UnFollow)
+
+	// 'posts' グループの下でルートを設定
+	posts := user.Group("posts")
+	userPostsAuthenticated := posts.Use(middlewares.IsAuthenticated)
+
+	// 投稿一覧
+	posts.Get("", controllers.Posts)
+	// 投稿
+	userPostsAuthenticated.Post("", controllers.CreatePost)
+	// 投稿詳細取得
+	posts.Get(":id", controllers.GetPost)
+	// 投稿更新
+	userPostsAuthenticated.Put(":id", controllers.UpdatePost)
+	// 投稿削除
+	userPostsAuthenticated.Delete(":id", controllers.DeletePost)
+
+	// 'events' グループの下でルートを設定
+	events := user.Group("events")
+	userEventsAuthenticated := events.Use(middlewares.IsAuthenticated)
+
+	// イベント一覧
+	events.Get("", controllers.Events)
+	// イベント
+	userEventsAuthenticated.Post("", controllers.CreateEvent)
+	// イベント詳細取得
+	events.Get(":id", controllers.GetEvent)
+	// イベント更新
+	userEventsAuthenticated.Put(":id", controllers.UpdateEvent)
+	// イベント削除
+	userEventsAuthenticated.Delete(":id", controllers.DeleteEvent)
 }

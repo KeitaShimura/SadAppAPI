@@ -5,11 +5,10 @@ import (
 	"SadApp/src/database"
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
-	"strconv"
-	"time"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt" // JWTを使用するためのパッケージをインポート
+	"strconv"
+	"time"
 )
 
 // Register 関数は、新しいユーザーを登録するための関数です。
