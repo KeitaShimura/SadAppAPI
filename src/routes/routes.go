@@ -35,9 +35,12 @@ func Setup(app *fiber.App) {
 	userAuthenticated.Put("user/password", controllers.UpdatePassword)
 
 	// フォロー
-	userAuthenticated.Post("follow", controllers.Follow)
+	userAuthenticated.Post("follow/:id", controllers.Follow)
 	// フォロー解除
 	userAuthenticated.Delete("unfollow/:id", controllers.UnFollow)
+
+	// フォローチェック
+	userAuthenticated.Get("check_if_following/:id", controllers.CheckIfFollowing)
 
 	// 'posts' グループの下でルートを設定
 	posts := user.Group("posts")

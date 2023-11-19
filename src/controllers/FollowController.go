@@ -19,7 +19,11 @@ func Follow(c *fiber.Ctx) error {
 	}
 
 	// ログインユーザーのIDをfollowing_idに設定
-	follow.FollowerId = authUserId
+	follow.FollowingId = authUserId
+
+	// パラメータからfollower_idを取得
+	followerId, _ := strconv.Atoi(c.Params("id"))
+	follow.FollowerId = uint(followerId)
 
 	// フォロー情報をデータベースに保存
 	database.DB.Create(&follow)
@@ -28,15 +32,31 @@ func Follow(c *fiber.Ctx) error {
 }
 
 func UnFollow(c *fiber.Ctx) error {
-	id, _ := strconv.Atoi(c.Params("id"))
+	// ログインユーザーのIDを取得
+	authUserId, _ := middlewares.GetUserId(c)
 
-	follow := models.Follow{
-		Id: uint(id),
+	// パラメータからfollower_idを取得
+	followerId, _ := strconv.Atoi(c.Params("id"))
+
+	// 該当するフォロー関係を検索して削除
+	follow := models.Follow{}
+	database.DB.Where("following_id = ? AND follower_id = ?", authUserId, followerId).Delete(&follow)
+
+	return c.SendStatus(fiber.StatusOK)
+}
+
+func CheckIfFollowing(c *fiber.Ctx) error {
+	authUserId, _ := middlewares.GetUserId(c)
+	targetUserId, _ := strconv.Atoi(c.Params("id"))
+
+	var follow models.Follow
+	result := database.DB.Where("following_id = ? AND follower_id = ?", authUserId, targetUserId).First(&follow)
+
+	if result.Error != nil {
+		return c.JSON(false)
 	}
 
-	database.DB.Delete(&follow)
-
-	return nil
+	return c.JSON(true)
 }
 
 func GetFollowers(c *fiber.Ctx) error {
