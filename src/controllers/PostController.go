@@ -2,24 +2,62 @@ package controllers
 
 import (
 	"SadApp/src/database"
+	"SadApp/src/middlewares"
 	"SadApp/src/models"
-	"github.com/gofiber/fiber/v2"
 	"strconv"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func Posts(c *fiber.Ctx) error {
-	return c.JSON(models.Post{})
+	var posts []models.Post // Create a slice to hold the posts
+
+	// Query the database for all posts
+	result := database.DB.Find(&posts)
+	if result.Error != nil {
+		// If there's an error during the query, return the error
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Cannot retrieve posts",
+		})
+	}
+
+	// Return the list of posts as JSON
+	return c.JSON(posts)
 }
 
 func CreatePost(c *fiber.Ctx) error {
-	var post models.Post
-
-	if err := c.BodyParser(&post); err != nil {
-		return err
+	// First, get the user ID from the JWT token
+	userId, err := middlewares.GetUserId(c)
+	if err != nil {
+		// If there's an error retrieving the user ID, return an error
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Unauthorized",
+		})
 	}
 
-	database.DB.Create(&post)
+	// Initialize a new Post struct
+	var post models.Post
 
+	// Parse the request body into the post struct
+	if err := c.BodyParser(&post); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Bad request",
+		})
+	}
+
+	// Assign the retrieved user ID to the post
+	post.UserId = userId // Assuming your Post model has a UserId field
+
+	// Create the post in the database
+	result := database.DB.Create(&post)
+	if result.Error != nil {
+		// If there's an error during the creation, return the error
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Cannot create post",
+		})
+	}
+
+	// Return the created post as JSON
 	return c.JSON(post)
 }
 
