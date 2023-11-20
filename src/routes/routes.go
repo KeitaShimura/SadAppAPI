@@ -22,6 +22,8 @@ func Setup(app *fiber.App) {
 	// フォローしているユーザー一覧
 	user.Get("following/:id", controllers.GetFollowings)
 
+	user.Get("user_posts/:id", controllers.UserPosts)
+
 	// IsAuthenticatedミドルウェアを使用して、認証が必要なルートのグループを作成
 	// このミドルウェアは、ユーザーが認証されているかどうかをチェックし、認証されていない場合は処理を進めない
 	userAuthenticated := user.Use(middlewares.IsAuthenticated)

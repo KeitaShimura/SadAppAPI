@@ -25,6 +25,25 @@ func Posts(c *fiber.Ctx) error {
 	return c.JSON(posts)
 }
 
+func UserPosts(c *fiber.Ctx) error {
+	userID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid user ID",
+		})
+	}
+
+	var posts []models.Post
+	result := database.DB.Where("user_id = ?", userID).Find(&posts)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Cannot retrieve posts for the user",
+		})
+	}
+
+	return c.JSON(posts)
+}
+
 func CreatePost(c *fiber.Ctx) error {
 	// First, get the user ID from the JWT token
 	userId, err := middlewares.GetUserId(c)
@@ -46,7 +65,7 @@ func CreatePost(c *fiber.Ctx) error {
 	}
 
 	// Assign the retrieved user ID to the post
-	post.UserId = userId // Assuming your Post model has a UserId field
+	post.UserID = userId // Assuming your Post model has a UserId field
 
 	// Create the post in the database
 	result := database.DB.Create(&post)
