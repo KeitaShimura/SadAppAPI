@@ -22,6 +22,7 @@ func Setup(app *fiber.App) {
 	// フォローしているユーザー一覧
 	user.Get("following/:id", controllers.GetFollowings)
 
+	// ユーザーごとの投稿一覧
 	user.Get("user_posts/:id", controllers.UserPosts)
 
 	// 'posts' グループの下でルートを設定

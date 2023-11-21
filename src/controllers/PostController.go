@@ -34,8 +34,29 @@ func UserPosts(c *fiber.Ctx) error {
 	}
 
 	var posts []models.Post
-	// Preload User data with each post
-	result := database.DB.Where("user_id = ?", userID).Preload("User").Find(&posts)
+	// ページ番号を取得
+	page := 1
+	pageSize := 50
+
+	// クエリから 'page' を取得
+	if p, err := strconv.Atoi(c.Query("page", "1")); err == nil && p > 0 {
+		page = p
+	}
+
+	// クエリから 'pageSize' を取得
+	if ps, err := strconv.Atoi(c.Query("pageSize", "50")); err == nil && ps > 0 {
+		pageSize = ps
+	}
+
+	var total int64
+	database.DB.Model(&models.Post{}).Where("user_id = ?", userID).Count(&total)
+
+	result := database.DB.Where("user_id = ?", userID).
+		Preload("User").
+		Limit(pageSize).
+		Offset((page - 1) * pageSize).
+		Find(&posts)
+
 	if result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Cannot retrieve posts for the user",
