@@ -34,7 +34,8 @@ func UserPosts(c *fiber.Ctx) error {
 	}
 
 	var posts []models.Post
-	result := database.DB.Where("user_id = ?", userID).Find(&posts)
+	// Preload User data with each post
+	result := database.DB.Where("user_id = ?", userID).Preload("User").Find(&posts)
 	if result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Cannot retrieve posts for the user",

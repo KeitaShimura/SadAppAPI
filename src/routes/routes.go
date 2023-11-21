@@ -24,6 +24,11 @@ func Setup(app *fiber.App) {
 
 	user.Get("user_posts/:id", controllers.UserPosts)
 
+	// 'posts' グループの下でルートを設定
+	posts := user.Group("posts")
+	// 投稿一覧
+	posts.Get("", controllers.Posts)
+
 	// IsAuthenticatedミドルウェアを使用して、認証が必要なルートのグループを作成
 	// このミドルウェアは、ユーザーが認証されているかどうかをチェックし、認証されていない場合は処理を進めない
 	userAuthenticated := user.Use(middlewares.IsAuthenticated)
@@ -44,12 +49,8 @@ func Setup(app *fiber.App) {
 	// フォローチェック
 	userAuthenticated.Get("check_if_following/:id", controllers.CheckIfFollowing)
 
-	// 'posts' グループの下でルートを設定
-	posts := user.Group("posts")
 	userPostsAuthenticated := posts.Use(middlewares.IsAuthenticated)
 
-	// 投稿一覧
-	posts.Get("", controllers.Posts)
 	// 投稿
 	userPostsAuthenticated.Post("", controllers.CreatePost)
 	// 投稿詳細取得
