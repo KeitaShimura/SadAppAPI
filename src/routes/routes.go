@@ -22,7 +22,7 @@ func Setup(app *fiber.App) {
 	// フォロワー一覧
 	user.Get("followers/:id", controllers.GetFollowers)
 	// フォローしているユーザー一覧
-	user.Get("following/:id", controllers.GetFollowings)
+	user.Get("followings/:id", controllers.GetFollowings)
 
 	// ユーザーごとの投稿一覧
 	user.Get("user_posts/:id", controllers.UserPosts)
