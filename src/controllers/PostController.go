@@ -10,20 +10,39 @@ import (
 )
 
 func Posts(c *fiber.Ctx) error {
-	var posts []models.Post // Create a slice to hold the posts
+    currentUserId, err := middlewares.GetUserId(c)
+    if err != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "error": "Error retrieving user ID",
+        })
+    }
 
-	// Query the database for all posts
-	result := database.DB.Find(&posts)
-	if result.Error != nil {
-		// If there's an error during the query, return the error
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Cannot retrieve posts",
-		})
-	}
+    // Fetch the IDs of users that are following the current user
+    var followers []models.Follow
+    database.DB.Where("following_id = ?", currentUserId).Find(&followers)
 
-	// Return the list of posts as JSON
-	return c.JSON(posts)
+    // Extract user IDs from the followers
+    var followerIds []uint
+    for _, follower := range followers {
+        followerIds = append(followerIds, follower.FollowerId)
+    }
+
+    // Include the current user's ID in the list
+    followerIds = append(followerIds, currentUserId)
+
+    // Fetch posts from the current user and the users who follow them
+    var posts []models.Post
+    result := database.DB.Where("user_id IN ?", followerIds).Find(&posts)
+    if result.Error != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "error": "Cannot retrieve posts",
+        })
+    }
+
+    // Return the list of posts as JSON
+    return c.JSON(posts)
 }
+
 
 func UserPosts(c *fiber.Ctx) error {
 	userID, err := c.ParamsInt("id")
