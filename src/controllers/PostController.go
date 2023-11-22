@@ -30,9 +30,17 @@ func Posts(c *fiber.Ctx) error {
     // Include the current user's ID in the list
     followerIds = append(followerIds, currentUserId)
 
+    // Get pagination parameters
+    page, pageSize := getPaginationParameters(c)
+
     // Fetch posts from the current user and the users who follow them
     var posts []models.Post
-    result := database.DB.Where("user_id IN ?", followerIds).Find(&posts)
+    result := database.DB.Where("user_id IN ?", followerIds).
+        Preload("User").
+        Limit(pageSize).
+        Offset((page - 1) * pageSize).
+        Find(&posts)
+
     if result.Error != nil {
         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
             "error": "Cannot retrieve posts",
@@ -41,6 +49,21 @@ func Posts(c *fiber.Ctx) error {
 
     // Return the list of posts as JSON
     return c.JSON(posts)
+}
+
+// Helper function to get pagination parameters
+func getPaginationParameters(c *fiber.Ctx) (int, int) {
+    page, _ := strconv.Atoi(c.Query("page", "1"))
+    pageSize, _ := strconv.Atoi(c.Query("pageSize", "50"))
+
+    if page < 1 {
+        page = 1
+    }
+    if pageSize < 1 || pageSize > 100 {
+        pageSize = 50
+    }
+
+    return page, pageSize
 }
 
 
