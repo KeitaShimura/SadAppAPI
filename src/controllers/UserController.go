@@ -8,6 +8,17 @@ import (
 	"strconv"
 )
 
+func GetAllUsers(c *fiber.Ctx) error {
+	var users []models.User
+	result := database.DB.Find(&users)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "ユーザー情報の取得に失敗しました",
+		})
+	}
+	return c.JSON(users)
+}
+
 func GetUser(c *fiber.Ctx) error {
 	// ユーザーモデルの新しいインスタンスを作成
 	var user models.User

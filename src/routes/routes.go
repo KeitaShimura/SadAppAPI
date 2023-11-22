@@ -15,6 +15,8 @@ func Setup(app *fiber.App) {
 	user.Post("register", controllers.Register)
 	// ログイン
 	user.Post("login", controllers.Login)
+	// ユーザー一覧
+	user.Get("users", controllers.GetAllUsers)
 	// ユーザー詳細
 	user.Get("user/:id", controllers.GetUser)
 	// フォロワー一覧
