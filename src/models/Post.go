@@ -7,7 +7,8 @@ type Post struct {
 	Id          uint      `json:"id"`
 	UserId      uint      `json:"user_id" gorm:"column:user_id"`
 	User        User      `json:"user"`
-	Description string    `json:"description"`
+	Content string    `json:"content"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" gorm:"nullable"`
+	PostComment []PostComment `json:"comments" gorm:"foreignKey:PostId"`
 }

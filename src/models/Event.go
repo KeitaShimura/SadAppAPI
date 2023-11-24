@@ -8,9 +8,10 @@ type Event struct {
 	UserId      uint      `json:"user_id"`
 	User        User      `json:"user"`
 	Title       string    `json:"title"`
-	Description string    `json:"description"`
+	Content string    `json:"content"`
 	Event_URL   string    `json:"event_url"`
 	EventDate   time.Time `json:"event_date"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" gorm:"nullable"`
+	EventComment []EventComment `json:"comments" gorm:"foreignKey:EventId"`
 }
