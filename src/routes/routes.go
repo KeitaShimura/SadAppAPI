@@ -7,80 +7,81 @@ import (
 )
 
 func Setup(app *fiber.App) {
-	api := app.Group("api")
+	// APIの基本パスを設定
+	api := app.Group("/api")
 
-	// 'user' グループの下でルートを設定
-	user := api.Group("user")
+	// ユーザー関連のルートを設定
+	user := api.Group("/user")
 	// アカウント登録
-	user.Post("register", controllers.Register)
+	user.Post("/register", controllers.Register)
 	// ログイン
-	user.Post("login", controllers.Login)
-	// ユーザー一覧
-	user.Get("users", controllers.GetAllUsers)
-	// ユーザー詳細
-	user.Get("user/:id", controllers.GetUser)
-	// フォロワー一覧
-	user.Get("followers/:id", controllers.GetFollowers)
-	// フォローしているユーザー一覧
-	user.Get("followings/:id", controllers.GetFollowings)
+	user.Post("/login", controllers.Login)
+	// ユーザー一覧を取得
+	user.Get("/users", controllers.GetAllUsers)
+	// 特定のユーザーの詳細を取得
+	user.Get("/user/:id", controllers.GetUser)
+	// 特定ユーザーのフォロワー一覧を取得
+	user.Get("/followers/:id", controllers.GetFollowers)
+	// 特定ユーザーがフォローしているユーザー一覧を取得
+	user.Get("/followings/:id", controllers.GetFollowings)
+	// 特定ユーザーの投稿一覧を取得
+	user.Get("/user_posts/:id", controllers.UserPosts)
+	// 特定ユーザーのイベント一覧を取得
+	user.Get("/user_events/:id", controllers.UserEvents)
 
-	// ユーザーごとの投稿一覧
-	user.Get("user_posts/:id", controllers.UserPosts)
-	// ユーザーごとのイベント一覧
-	user.Get("user_events/:id", controllers.UserEvents)
-
-	// 'posts' グループの下でルートを設定
-	posts := user.Group("posts")
-	// 投稿一覧
-	posts.Get("", controllers.Posts)
-
-	// 'events' グループの下でルートを設定
-	events := user.Group("events")
-	// イベント一覧
-	events.Get("", controllers.Events)
-
-	// IsAuthenticatedミドルウェアを使用して、認証が必要なルートのグループを作成
-	// このミドルウェアは、ユーザーが認証されているかどうかをチェックし、認証されていない場合は処理を進めない
+	// 認証が必要なルートのグループを作成
 	userAuthenticated := user.Use(middlewares.IsAuthenticated)
-	// ユーザー認証
-	userAuthenticated.Get("user", controllers.GetAuthUser)
+	// 認証済みユーザーの情報取得
+	userAuthenticated.Get("/user", controllers.GetAuthUser)
 	// ログアウト
-	userAuthenticated.Post("logout", controllers.Logout)
-	// ユーザー情報更新
-	userAuthenticated.Put("user", controllers.UpdateUser)
-	// パスワード更新
-	userAuthenticated.Put("user/password", controllers.UpdatePassword)
+	userAuthenticated.Post("/logout", controllers.Logout)
+	// ユーザー情報の更新
+	userAuthenticated.Put("/user", controllers.UpdateUser)
+	// パスワードの更新
+	userAuthenticated.Put("/user/password", controllers.UpdatePassword)
+	// ユーザーをフォロー
+	userAuthenticated.Post("/follow/:id", controllers.Follow)
+	// フォローを解除
+	userAuthenticated.Delete("/unfollow/:id", controllers.UnFollow)
+	// フォローしているかチェック
+	userAuthenticated.Get("/check_if_following/:id", controllers.CheckIfFollowing)
+	// 投稿へのいいね
+	userAuthenticated.Post("/post/:id/like", controllers.LikePost)
+	// いいねの解除
+	userAuthenticated.Delete("/post/:id/unlike", controllers.UnlikePost)
+	// 投稿がいいねされたかチェック
+	userAuthenticated.Get("/post/:id/checklike", controllers.CheckIfPostLiked)
 
-	// フォロー
-	userAuthenticated.Post("follow/:id", controllers.Follow)
-	// フォロー解除
-	userAuthenticated.Delete("unfollow/:id", controllers.UnFollow)
-
-	// フォローチェック
-	userAuthenticated.Get("check_if_following/:id", controllers.CheckIfFollowing)
-
+	// 投稿関連のルート設定
+	posts := api.Group("/posts")
+	// 投稿一覧取得
+	posts.Get("", controllers.Posts)
+	// 認証が必要な投稿ルート
 	userPostsAuthenticated := posts.Use(middlewares.IsAuthenticated)
-
-	// 投稿
+	// 投稿の作成
 	userPostsAuthenticated.Post("", controllers.CreatePost)
-	// 投稿詳細取得
-	posts.Get(":id", controllers.GetPost)
-	// 投稿更新
-	userPostsAuthenticated.Put(":id", controllers.UpdatePost)
-	// 投稿削除
-	userPostsAuthenticated.Delete(":id", controllers.DeletePost)
+	// 特定の投稿詳細取得
+	posts.Get("/:id", controllers.GetPost)
+	// 投稿の更新
+	userPostsAuthenticated.Put("/:id", controllers.UpdatePost)
+	// 投稿の削除
+	userPostsAuthenticated.Delete("/:id", controllers.DeletePost)
 
-	// 'events' グループの下でルートを設定
-	userEventsAuthenticated := events.Use(middlewares.IsAuthenticated)
+	// 投稿のいいね数取得
+	app.Get("/post/:id/likes", controllers.GetLikesForPost)
 
-	// イベント一覧
+	// イベント関連のルート設定
+	events := api.Group("/events")
+	// イベント一覧取得
 	events.Get("", controllers.Events)
-	// イベント
+	// 認証が必要なイベントルート
+	userEventsAuthenticated := events.Use(middlewares.IsAuthenticated)
+	// イベントの作成
 	userEventsAuthenticated.Post("", controllers.CreateEvent)
-	// イベント詳細取得
-	events.Get(":id", controllers.GetEvent)
-	// イベント更新
-	userEventsAuthenticated.Put(":id", controllers.UpdateEvent)
-	// イベント削除
-	userEventsAuthenticated.Delete(":id", controllers.DeleteEvent)
+	// 特定のイベント詳細取得
+	events.Get("/:id", controllers.GetEvent)
+	// イベントの更新
+	userEventsAuthenticated.Put("/:id", controllers.UpdateEvent)
+	// イベントの削除
+	userEventsAuthenticated.Delete("/:id", controllers.DeleteEvent)
 }
