@@ -30,7 +30,7 @@ func Connect() {
 // AutoMigrate はデータベースのスキーマを自動的にマイグレーション（更新）する関数です。
 func AutoMigrate() {
 	// Userモデルを使用して、データベースのスキーマを自動的にマイグレーションします。
-	err := DB.AutoMigrate(models.User{}, models.Follow{}, models.Post{}, models.PostComment{},models.Event{}, models.EventComment{})
+	err := DB.AutoMigrate(models.User{}, models.Follow{}, models.Post{}, models.PostComment{},models.Event{}, models.EventComment{}, models.EventParticipant{})
 	if err != nil {
 		// マイグレーションに失敗した場合、エラーをログに記録し、プログラムを終了します。
 		log.Fatalf("データベースのマイグレーションに失敗しました: %v", err)
