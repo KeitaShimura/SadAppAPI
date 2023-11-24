@@ -53,9 +53,9 @@ func Setup(app *fiber.App) {
 	userPostsAuthenticated := posts.Use(middlewares.IsAuthenticated)
 	// 投稿の作成
 	userPostsAuthenticated.Post("", controllers.CreatePost)
-	// 投稿の更新
+	// 投稿の更新（認証が必要）
 	userPostsAuthenticated.Put("/:id", controllers.UpdatePost)
-	// 投稿の削除
+	// 投稿の削除（認証が必要）
 	userPostsAuthenticated.Delete("/:id", controllers.DeletePost)
 	// 投稿へのいいね
 	userAuthenticated.Post("/post/:id/like", controllers.LikePost)
@@ -63,6 +63,18 @@ func Setup(app *fiber.App) {
 	userAuthenticated.Delete("/post/:id/unlike", controllers.UnlikePost)
 	// 投稿がいいねされたかチェック
 	userAuthenticated.Get("/post/:id/checklike", controllers.CheckIfPostLiked)
+
+	// コメント関連のルート設定（投稿）
+	postComments := api.Group("/comments/post")
+	// 特定の投稿に対するコメント一覧を取得
+	postComments.Get("/:post_id", controllers.PostComments)
+	// コメントの作成（認証が必要）
+	userPostCommentsAuthenticated := postComments.Use(middlewares.IsAuthenticated)
+	userPostCommentsAuthenticated.Post("/", controllers.CreatePostComment)
+	// コメントの更新（認証が必要）
+	userPostCommentsAuthenticated.Put("/:id", controllers.UpdatePostComment)
+	// コメントの削除（認証が必要）
+	userPostCommentsAuthenticated.Delete("/:id", controllers.DeletePostComment)
 
 	// イベント関連のルート設定
 	events := user.Group("/events")
@@ -77,28 +89,32 @@ func Setup(app *fiber.App) {
 
 	// 認証が必要なイベント関連のルート設定
 	userEventsAuthenticated := events.Use(middlewares.IsAuthenticated)
-	// イベントの作成
+	// イベントの作成（認証が必要）
 	userEventsAuthenticated.Post("", controllers.CreateEvent)
-	// イベントの更新
+	// イベントの更新（認証が必要）
 	userEventsAuthenticated.Put("/:id", controllers.UpdateEvent)
-	// イベントの削除
+	// イベントの削除（認証が必要）
 	userEventsAuthenticated.Delete("/:id", controllers.DeleteEvent)
-	// イベントへのいいね
+	// イベントへのいいね（認証が必要）
 	userAuthenticated.Post("/event/:id/like", controllers.LikeEvent)
-	// イベントのいいねの解除
+	// イベントのいいねの解除（認証が必要）
 	userAuthenticated.Delete("/event/:id/unlike", controllers.UnlikeEvent)
-	// イベントがいいねされたかチェック
+	// イベントがいいねされたかチェック（認証が必要）
 	userAuthenticated.Get("/event/:id/checklike", controllers.CheckIfEventLiked)
-	// イベントへの参加
+	// イベントへの参加（認証が必要）
 	userEventsAuthenticated.Post("/:id/join", controllers.JoinEvent)
-	// イベント参加の解除
+	// イベント参加の解除（認証が必要）
 	userEventsAuthenticated.Delete("/:id/leave", controllers.LeaveEvent)
 
-	comments := api.Group("/comments")
-	// 認証が必要なイベント関連のルート設定
-	userCommentsAuthenticated := comments.Use(middlewares.IsAuthenticated)
-	comments.Get("/post/:post_id", controllers.Comments)
-	userCommentsAuthenticated.Post("/", controllers.CreateComment)
-	userCommentsAuthenticated.Put("/:id", controllers.UpdateComment)
-	userCommentsAuthenticated.Delete("/:id", controllers.DeleteComment)
+	// コメント関連のルート設定（イベント）
+	eventComments := api.Group("/comments/event")
+	// 特定のイベントに対するコメント一覧を取得
+	eventComments.Get("/:event_id", controllers.EventComments)
+	// コメントの作成（認証が必要）
+	userEventCommentsAuthenticated := eventComments.Use(middlewares.IsAuthenticated)
+	userEventCommentsAuthenticated.Post("/", controllers.CreateEventComment)
+	// コメントの更新（認証が必要）
+	userEventCommentsAuthenticated.Put("/:id", controllers.UpdateEventComment)
+	// コメントの削除（認証が必要）
+	userEventCommentsAuthenticated.Delete("/:id", controllers.DeleteEventComment)
 }
