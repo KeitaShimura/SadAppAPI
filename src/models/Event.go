@@ -15,5 +15,5 @@ type Event struct {
 	UpdatedAt    time.Time      `json:"updated_at" gorm:"nullable"`
 	EventComment []EventComment `json:"comments" gorm:"foreignKey:EventId"`
 	Participants []User         `json:"participants" gorm:"many2many:event_participants"`
-	EventLikes   []User         `json:"likes" gorm:"many2many:likes"`
+	EventLikes   []User         `json:"event_likes" gorm:"many2many:event_likes"`
 }

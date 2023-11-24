@@ -47,10 +47,16 @@ func Setup(app *fiber.App) {
 	userAuthenticated.Get("/check_if_following/:id", controllers.CheckIfFollowing)
 	// 投稿へのいいね
 	userAuthenticated.Post("/post/:id/like", controllers.LikePost)
-	// いいねの解除
+	// 投稿のいいねの解除
 	userAuthenticated.Delete("/post/:id/unlike", controllers.UnlikePost)
 	// 投稿がいいねされたかチェック
 	userAuthenticated.Get("/post/:id/checklike", controllers.CheckIfPostLiked)
+	// イベントへのいいね
+	userAuthenticated.Post("/event/:id/like", controllers.LikeEvent)
+	// イベントのいいねの解除
+	userAuthenticated.Delete("/event/:id/unlike", controllers.UnlikeEvent)
+	// イベントがいいねされたかチェック
+	userAuthenticated.Get("/event/:id/checklike", controllers.CheckIfEventLiked)
 
 	// 投稿関連のルート設定
 	posts := api.Group("/posts")
@@ -68,7 +74,7 @@ func Setup(app *fiber.App) {
 	userPostsAuthenticated.Delete("/:id", controllers.DeletePost)
 
 	// 投稿のいいね数取得
-	app.Get("/post/:id/likes", controllers.GetLikesForPost)
+	user.Get("/post/:id/likes", controllers.GetLikesForPost)
 
 	// イベント関連のルート設定
 	events := api.Group("/events")
@@ -84,4 +90,7 @@ func Setup(app *fiber.App) {
 	userEventsAuthenticated.Put("/:id", controllers.UpdateEvent)
 	// イベントの削除
 	userEventsAuthenticated.Delete("/:id", controllers.DeleteEvent)
+
+	// イベントのいいね数取得
+	user.Get("/event/:id/likes", controllers.GetLikesForEvent)
 }

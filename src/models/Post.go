@@ -11,5 +11,5 @@ type Post struct {
 	CreatedAt   time.Time     `json:"created_at"`
 	UpdatedAt   time.Time     `json:"updated_at" gorm:"nullable"`
 	PostComment []PostComment `json:"comments" gorm:"foreignKey:PostId"`
-	PostLikes   []User        `json:"likes" gorm:"many2many:likes"`
+	PostLikes   []User        `json:"post_likes" gorm:"many2many:post_likes"`
 }
