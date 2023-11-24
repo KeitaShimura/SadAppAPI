@@ -89,4 +89,8 @@ func Setup(app *fiber.App) {
 	userAuthenticated.Delete("/event/:id/unlike", controllers.UnlikeEvent)
 	// イベントがいいねされたかチェック
 	userAuthenticated.Get("/event/:id/checklike", controllers.CheckIfEventLiked)
+	// イベントへの参加
+	userEventsAuthenticated.Post("/:id/join", controllers.JoinEvent)
+	// イベント参加の解除
+	userEventsAuthenticated.Delete("/:id/leave", controllers.LeaveEvent)
 }
