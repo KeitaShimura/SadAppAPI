@@ -26,11 +26,18 @@ func Setup(app *fiber.App) {
 
 	// ユーザーごとの投稿一覧
 	user.Get("user_posts/:id", controllers.UserPosts)
+	// ユーザーごとのイベント一覧
+	user.Get("user_events/:id", controllers.UserEvents)
 
 	// 'posts' グループの下でルートを設定
 	posts := user.Group("posts")
 	// 投稿一覧
 	posts.Get("", controllers.Posts)
+
+	// 'events' グループの下でルートを設定
+	events := user.Group("events")
+	// イベント一覧
+	events.Get("", controllers.Events)
 
 	// IsAuthenticatedミドルウェアを使用して、認証が必要なルートのグループを作成
 	// このミドルウェアは、ユーザーが認証されているかどうかをチェックし、認証されていない場合は処理を進めない
@@ -64,7 +71,6 @@ func Setup(app *fiber.App) {
 	userPostsAuthenticated.Delete(":id", controllers.DeletePost)
 
 	// 'events' グループの下でルートを設定
-	events := user.Group("events")
 	userEventsAuthenticated := events.Use(middlewares.IsAuthenticated)
 
 	// イベント一覧

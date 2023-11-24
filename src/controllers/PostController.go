@@ -10,62 +10,46 @@ import (
 )
 
 func Posts(c *fiber.Ctx) error {
-    currentUserId, err := middlewares.GetUserId(c)
-    if err != nil {
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": "Error retrieving user ID",
-        })
-    }
+	currentUserId, err := middlewares.GetUserId(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error retrieving user ID",
+		})
+	}
 
-    // Fetch the IDs of users that are following the current user
-    var followers []models.Follow
-    database.DB.Where("following_id = ?", currentUserId).Find(&followers)
+	// Fetch the IDs of users that are following the current user
+	var followers []models.Follow
+	database.DB.Where("following_id = ?", currentUserId).Find(&followers)
 
-    // Extract user IDs from the followers
-    var followerIds []uint
-    for _, follower := range followers {
-        followerIds = append(followerIds, follower.FollowerId)
-    }
+	// Extract user IDs from the followers
+	var followerIds []uint
+	for _, follower := range followers {
+		followerIds = append(followerIds, follower.FollowerId)
+	}
 
-    // Include the current user's ID in the list
-    followerIds = append(followerIds, currentUserId)
+	// Include the current user's ID in the list
+	followerIds = append(followerIds, currentUserId)
 
-    // Get pagination parameters
-    page, pageSize := getPaginationParameters(c)
+	// Get pagination parameters
+	page, pageSize := getPaginationParameters(c)
 
-    // Fetch posts from the current user and the users who follow them
-    var posts []models.Post
-    result := database.DB.Where("user_id IN ?", followerIds).
-        Preload("User").
-        Limit(pageSize).
-        Offset((page - 1) * pageSize).
-        Find(&posts)
+	// Fetch posts from the current user and the users who follow them
+	var posts []models.Post
+	result := database.DB.Where("user_id IN ?", followerIds).
+		Preload("User").
+		Limit(pageSize).
+		Offset((page - 1) * pageSize).
+		Find(&posts)
 
-    if result.Error != nil {
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": "Cannot retrieve posts",
-        })
-    }
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Cannot retrieve posts",
+		})
+	}
 
-    // Return the list of posts as JSON
-    return c.JSON(posts)
+	// Return the list of posts as JSON
+	return c.JSON(posts)
 }
-
-// Helper function to get pagination parameters
-func getPaginationParameters(c *fiber.Ctx) (int, int) {
-    page, _ := strconv.Atoi(c.Query("page", "1"))
-    pageSize, _ := strconv.Atoi(c.Query("pageSize", "50"))
-
-    if page < 1 {
-        page = 1
-    }
-    if pageSize < 1 || pageSize > 100 {
-        pageSize = 50
-    }
-
-    return page, pageSize
-}
-
 
 func UserPosts(c *fiber.Ctx) error {
 	userID, err := c.ParamsInt("id")
@@ -108,6 +92,18 @@ func UserPosts(c *fiber.Ctx) error {
 	return c.JSON(posts)
 }
 
+func GetPost(c *fiber.Ctx) error {
+	id, _ := strconv.Atoi(c.Params("id"))
+
+	post := models.Post{
+		Id: uint(id),
+	}
+
+	database.DB.Find(&post)
+
+	return c.JSON(post)
+}
+
 func CreatePost(c *fiber.Ctx) error {
 	// First, get the user ID from the JWT token
 	userId, err := middlewares.GetUserId(c)
@@ -129,7 +125,7 @@ func CreatePost(c *fiber.Ctx) error {
 	}
 
 	// Assign the retrieved user ID to the post
-	post.UserID = userId // Assuming your Post model has a UserId field
+	post.UserId = userId // Assuming your Post model has a UserId field
 
 	// Create the post in the database
 	result := database.DB.Create(&post)
@@ -141,18 +137,6 @@ func CreatePost(c *fiber.Ctx) error {
 	}
 
 	// Return the created post as JSON
-	return c.JSON(post)
-}
-
-func GetPost(c *fiber.Ctx) error {
-	id, _ := strconv.Atoi(c.Params("id"))
-
-	post := models.Post{
-		Id: uint(id),
-	}
-
-	database.DB.Find(&post)
-
 	return c.JSON(post)
 }
 
@@ -182,4 +166,19 @@ func DeletePost(c *fiber.Ctx) error {
 	database.DB.Delete(&post)
 
 	return nil
+}
+
+// Helper function to get pagination parameters
+func getPaginationParameters(c *fiber.Ctx) (int, int) {
+	page, _ := strconv.Atoi(c.Query("page", "1"))
+	pageSize, _ := strconv.Atoi(c.Query("pageSize", "50"))
+
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 || pageSize > 100 {
+		pageSize = 50
+	}
+
+	return page, pageSize
 }
