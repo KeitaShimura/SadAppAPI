@@ -93,4 +93,12 @@ func Setup(app *fiber.App) {
 	userEventsAuthenticated.Post("/:id/join", controllers.JoinEvent)
 	// イベント参加の解除
 	userEventsAuthenticated.Delete("/:id/leave", controllers.LeaveEvent)
+
+	comments := api.Group("/comments")
+	// 認証が必要なイベント関連のルート設定
+	userCommentsAuthenticated := comments.Use(middlewares.IsAuthenticated)
+	comments.Get("/post/:post_id", controllers.Comments)
+	userCommentsAuthenticated.Post("/", controllers.CreateComment)
+	userCommentsAuthenticated.Put("/:id", controllers.UpdateComment)
+	userCommentsAuthenticated.Delete("/:id", controllers.DeleteComment)
 }
