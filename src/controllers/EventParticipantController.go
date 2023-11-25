@@ -17,7 +17,10 @@ func JoinEvent(c *fiber.Ctx) error {
 	var participant models.EventParticipant
 
 	// パラメータからevent_idを取得
-	eventId, _ := strconv.Atoi(c.Params("id"))
+	eventId, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid event ID"})
+	}
 	participant.EventId = uint(eventId)
 	participant.UserId = authUserId
 
@@ -33,13 +36,33 @@ func LeaveEvent(c *fiber.Ctx) error {
 	authUserId, _ := middlewares.GetUserId(c)
 
 	// パラメータからevent_idを取得
-	eventId, _ := strconv.Atoi(c.Params("id"))
-
+	eventId, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid event ID"})
+	}
 	// 該当するイベント参加情報を検索して削除
 	participant := models.EventParticipant{}
 	database.DB.Where("event_id = ? AND user_id = ?", eventId, authUserId).Delete(&participant)
 
 	return c.SendStatus(fiber.StatusOK)
+}
+
+
+func CheckIfEventParticipated(c *fiber.Ctx) error {
+	userId, _ := middlewares.GetUserId(c)
+	eventId, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid event ID"})
+	}
+
+	var participant models.EventParticipant
+	result := database.DB.Where("user_id = ? AND event_id = ?", userId, eventId).First(&participant)
+
+	if result.Error != nil {
+		return c.JSON(false)
+	}
+
+	return c.JSON(true)
 }
 
 func GetEventParticipants(c *fiber.Ctx) error {

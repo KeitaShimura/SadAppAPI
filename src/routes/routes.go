@@ -70,7 +70,7 @@ func Setup(app *fiber.App) {
 	// 投稿のいいねの解除
 	userPostsAuthenticated.Delete("/:id/unlike", controllers.UnlikePost)
 	// 投稿がいいねされたかチェック
-	userPostsAuthenticated.Get("/:id/checklike", controllers.CheckIfPostLiked)
+	userPostsAuthenticated.Get("/:id/check_like", controllers.CheckIfPostLiked)
 
 	// コメント関連のルート設定（投稿）
 	postComments := posts.Group("comments")
@@ -110,11 +110,13 @@ func Setup(app *fiber.App) {
 	// イベントのいいねの解除（認証が必要）
 	userEventsAuthenticated.Delete("/:id/unlike", controllers.UnlikeEvent)
 	// イベントがいいねされたかチェック（認証が必要）
-	userEventsAuthenticated.Get("/:id/checklike", controllers.CheckIfEventLiked)
+	userEventsAuthenticated.Get("/:id/check_like", controllers.CheckIfEventLiked)
 	// イベントへの参加（認証が必要）
 	userEventsAuthenticated.Post("/:id/join", controllers.JoinEvent)
 	// イベント参加の解除（認証が必要）
 	userEventsAuthenticated.Delete("/:id/leave", controllers.LeaveEvent)
+	// イベントがいいねされたかチェック（認証が必要）
+	userEventsAuthenticated.Get("/:id/check_participant", controllers.CheckIfEventParticipated)
 
 	// コメント関連のルート設定（イベント）
 	eventComments := events.Group("comments")
