@@ -39,6 +39,12 @@ func Setup(app *fiber.App) {
 	userAuthenticated.Put("/user", controllers.UpdateUser)
 	// パスワードの更新
 	userAuthenticated.Put("/user/password", controllers.UpdatePassword)
+	// フォロー
+	userAuthenticated.Post("follow/:id", controllers.Follow)
+	// フォロー解除
+	userAuthenticated.Delete("unfollow/:id", controllers.UnFollow)
+	// フォローチェック
+	userAuthenticated.Get("check_if_following/:id", controllers.CheckIfFollowing)
 
 	// 投稿関連のルート設定
 	posts := user.Group("/posts")

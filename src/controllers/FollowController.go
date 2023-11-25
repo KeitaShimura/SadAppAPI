@@ -59,18 +59,6 @@ func CheckIfFollowing(c *fiber.Ctx) error {
 	return c.JSON(true)
 }
 
-func GetFollowers(c *fiber.Ctx) error {
-	userID, err := strconv.Atoi(c.Params("id"))
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "無効なユーザーID"})
-	}
-
-	var followers []models.Follow
-	database.DB.Where("following_id = ?", userID).Find(&followers)
-
-	return c.JSON(followers)
-}
-
 func GetFollowings(c *fiber.Ctx) error {
 	userID, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -78,7 +66,19 @@ func GetFollowings(c *fiber.Ctx) error {
 	}
 
 	var following []models.Follow
-	database.DB.Where("follower_id = ?", userID).Find(&following)
+	database.DB.Where("following_id = ?", userID).Find(&following)
 
 	return c.JSON(following)
+}
+
+func GetFollowers(c *fiber.Ctx) error {
+	userID, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "無効なユーザーID"})
+	}
+
+	var followers []models.Follow
+	database.DB.Where("follower_id = ?", userID).Find(&followers)
+
+	return c.JSON(followers)
 }
