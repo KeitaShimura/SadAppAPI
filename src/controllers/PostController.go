@@ -172,45 +172,44 @@ func DeletePost(c *fiber.Ctx) error {
 }
 
 func UserLikedPosts(c *fiber.Ctx) error {
-    // Retrieve the user ID (adjust this part based on how you manage user identification)
-    userID, err := c.ParamsInt("id")
-    if err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": "Invalid user ID",
-        })
-    }
+	// Retrieve the user ID (adjust this part based on how you manage user identification)
+	userID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid user ID",
+		})
+	}
 
-    // Get pagination parameters (reuse your existing function or define one)
-    page, pageSize := getPaginationParameters(c)
+	// Get pagination parameters (reuse your existing function or define one)
+	page, pageSize := getPaginationParameters(c)
 
-    // Find IDs of posts liked by the user
-    var postLikes []models.PostLike
-    database.DB.Where("user_id = ?", userID).Find(&postLikes)
+	// Find IDs of posts liked by the user
+	var postLikes []models.PostLike
+	database.DB.Where("user_id = ?", userID).Find(&postLikes)
 
-    // Extract post IDs
-    var postIds []uint
-    for _, postLike := range postLikes {
-        postIds = append(postIds, postLike.PostId)
-    }
+	// Extract post IDs
+	var postIds []uint
+	for _, postLike := range postLikes {
+		postIds = append(postIds, postLike.PostId)
+	}
 
-    // Fetch the posts based on the post IDs
-    var posts []models.Post
-    result := database.DB.Where("id IN ?", postIds).
-        Preload("User").
-        Limit(pageSize).
-        Offset((page - 1) * pageSize).
-        Find(&posts)
+	// Fetch the posts based on the post IDs
+	var posts []models.Post
+	result := database.DB.Where("id IN ?", postIds).
+		Preload("User").
+		Limit(pageSize).
+		Offset((page - 1) * pageSize).
+		Find(&posts)
 
-    if result.Error != nil {
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": "Cannot retrieve liked posts",
-        })
-    }
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Cannot retrieve liked posts",
+		})
+	}
 
-    // Return the list of liked posts as JSON
-    return c.JSON(posts)
+	// Return the list of liked posts as JSON
+	return c.JSON(posts)
 }
-
 
 // Helper function to get pagination parameters
 func getPaginationParameters(c *fiber.Ctx) (int, int) {
