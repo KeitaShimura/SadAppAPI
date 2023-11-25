@@ -78,7 +78,7 @@ func Setup(app *fiber.App) {
 	postComments.Get("/:post_id", controllers.PostComments)
 	// コメントの作成（認証が必要）
 	userPostCommentsAuthenticated := postComments.Use(middlewares.IsAuthenticated)
-	userPostCommentsAuthenticated.Post("/", controllers.CreatePostComment)
+	userPostCommentsAuthenticated.Post("/:id", controllers.CreatePostComment)
 	// コメントの更新（認証が必要）
 	userPostCommentsAuthenticated.Put("/:id", controllers.UpdatePostComment)
 	// コメントの削除（認証が必要）
