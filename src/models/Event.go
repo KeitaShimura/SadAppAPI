@@ -10,7 +10,7 @@ type Event struct {
 	Title        string         `json:"title"`
 	Content      string         `json:"content"`
 	Event_URL    string         `json:"event_url"`
-	EventDate    time.Time      `json:"event_date"`
+	EventDate    string         `json:"event_date"`
 	CreatedAt    time.Time      `json:"created_at"`
 	UpdatedAt    time.Time      `json:"updated_at" gorm:"nullable"`
 	EventComment []EventComment `json:"comments" gorm:"foreignKey:EventId"`

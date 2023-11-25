@@ -130,11 +130,14 @@ func CreatePost(c *fiber.Ctx) error {
 	// Create the post in the database
 	result := database.DB.Create(&post)
 	if result.Error != nil {
-		// If there's an error during the creation, return the error
+		// Handle creation error
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Cannot create post",
 		})
 	}
+
+	// Load the User data for the created post
+	database.DB.Preload("User").Find(&post, post.Id)
 
 	// Return the created post as JSON
 	return c.JSON(post)

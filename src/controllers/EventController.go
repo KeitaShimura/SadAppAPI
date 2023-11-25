@@ -136,6 +136,8 @@ func CreateEvent(c *fiber.Ctx) error {
 		})
 	}
 
+	database.DB.Preload("User").Find(&event, event.Id)
+
 	// Return the created event as JSON
 	return c.JSON(event)
 }
