@@ -53,7 +53,9 @@ func Setup(app *fiber.App) {
 	// 特定の投稿詳細取得
 	posts.Get("/:id", controllers.GetPost)
 	// 投稿のいいね数取得
-	user.Get("/post/:id/likes", controllers.GetLikesForPost)
+	posts.Get("/:id/likes", controllers.GetLikesForPost)
+	// ユーザーがいいねした投稿一覧
+	posts.Get("/:id/liked_posts", controllers.UserLikedPosts)
 
 	// 認証が必要な投稿関連のルート設定
 	userPostsAuthenticated := posts.Use(middlewares.IsAuthenticated)
@@ -64,14 +66,14 @@ func Setup(app *fiber.App) {
 	// 投稿の削除（認証が必要）
 	userPostsAuthenticated.Delete("/:id", controllers.DeletePost)
 	// 投稿へのいいね
-	userAuthenticated.Post("/post/:id/like", controllers.LikePost)
+	userPostsAuthenticated.Post("/:id/like", controllers.LikePost)
 	// 投稿のいいねの解除
-	userAuthenticated.Delete("/post/:id/unlike", controllers.UnlikePost)
+	userPostsAuthenticated.Delete("/:id/unlike", controllers.UnlikePost)
 	// 投稿がいいねされたかチェック
-	userAuthenticated.Get("/post/:id/checklike", controllers.CheckIfPostLiked)
+	userPostsAuthenticated.Get("/:id/checklike", controllers.CheckIfPostLiked)
 
 	// コメント関連のルート設定（投稿）
-	postComments := api.Group("/comments/post")
+	postComments := posts.Group("comments")
 	// 特定の投稿に対するコメント一覧を取得
 	postComments.Get("/:post_id", controllers.PostComments)
 	// コメントの作成（認証が必要）
@@ -91,7 +93,7 @@ func Setup(app *fiber.App) {
 	// イベントの参加者一覧
 	events.Get("/:id/participants", controllers.GetEventParticipants)
 	// イベントのいいね数取得
-	user.Get("/event/:id/likes", controllers.GetLikesForEvent)
+	events.Get("/:id/likes", controllers.GetLikesForEvent)
 
 	// 認証が必要なイベント関連のルート設定
 	userEventsAuthenticated := events.Use(middlewares.IsAuthenticated)
@@ -102,18 +104,18 @@ func Setup(app *fiber.App) {
 	// イベントの削除（認証が必要）
 	userEventsAuthenticated.Delete("/:id", controllers.DeleteEvent)
 	// イベントへのいいね（認証が必要）
-	userAuthenticated.Post("/event/:id/like", controllers.LikeEvent)
+	userEventsAuthenticated.Post("/:id/like", controllers.LikeEvent)
 	// イベントのいいねの解除（認証が必要）
-	userAuthenticated.Delete("/event/:id/unlike", controllers.UnlikeEvent)
+	userEventsAuthenticated.Delete("/:id/unlike", controllers.UnlikeEvent)
 	// イベントがいいねされたかチェック（認証が必要）
-	userAuthenticated.Get("/event/:id/checklike", controllers.CheckIfEventLiked)
+	userEventsAuthenticated.Get("/:id/checklike", controllers.CheckIfEventLiked)
 	// イベントへの参加（認証が必要）
 	userEventsAuthenticated.Post("/:id/join", controllers.JoinEvent)
 	// イベント参加の解除（認証が必要）
 	userEventsAuthenticated.Delete("/:id/leave", controllers.LeaveEvent)
 
 	// コメント関連のルート設定（イベント）
-	eventComments := api.Group("/comments/event")
+	eventComments := events.Group("comments")
 	// 特定のイベントに対するコメント一覧を取得
 	eventComments.Get("/:event_id", controllers.EventComments)
 	// コメントの作成（認証が必要）
