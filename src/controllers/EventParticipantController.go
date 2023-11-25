@@ -47,7 +47,6 @@ func LeaveEvent(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
 }
 
-
 func CheckIfEventParticipated(c *fiber.Ctx) error {
 	userId, _ := middlewares.GetUserId(c)
 	eventId, err := strconv.Atoi(c.Params("id"))
