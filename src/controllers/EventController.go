@@ -158,6 +158,46 @@ func UpdateEvent(c *fiber.Ctx) error {
 	return c.JSON(event)
 }
 
+func UserLikedEvents(c *fiber.Ctx) error {
+	// Retrieve the user ID (adjust this part based on how you manage user identification)
+	userID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid user ID",
+		})
+	}
+
+	// Get pagination parameters (reuse your existing function or define one)
+	page, pageSize := getPaginationParameters(c)
+
+	// Find IDs of events liked by the user
+	var eventLikes []models.EventLike
+	database.DB.Where("user_id = ?", userID).Find(&eventLikes)
+
+	// Extract event IDs
+	var eventIds []uint
+	for _, eventLike := range eventLikes {
+		eventIds = append(eventIds, eventLike.EventId)
+	}
+
+	// Fetch the events based on the event IDs
+	var events []models.Event
+	result := database.DB.Where("id IN ?", eventIds).
+		Preload("User").
+		Limit(pageSize).
+		Offset((page - 1) * pageSize).
+		Find(&events)
+
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Cannot retrieve liked events",
+		})
+	}
+
+	// Return the list of liked events as JSON
+	return c.JSON(events)
+}
+
 func DeleteEvent(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
 

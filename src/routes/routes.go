@@ -90,10 +90,12 @@ func Setup(app *fiber.App) {
 	events.Get("", controllers.Events)
 	// 特定のイベント詳細取得
 	events.Get("/:id", controllers.GetEvent)
-	// イベントの参加者一覧
-	events.Get("/:id/participants", controllers.GetEventParticipants)
 	// イベントのいいね数取得
 	events.Get("/:id/likes", controllers.GetLikesForEvent)
+	// ユーザーがいいねしたイベント一覧
+	events.Get("/:id/liked_events", controllers.UserLikedEvents)
+	// イベントの参加者一覧
+	events.Get("/:id/participants", controllers.GetEventParticipants)
 
 	// 認証が必要なイベント関連のルート設定
 	userEventsAuthenticated := events.Use(middlewares.IsAuthenticated)
