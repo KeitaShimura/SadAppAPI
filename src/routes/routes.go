@@ -94,6 +94,8 @@ func Setup(app *fiber.App) {
 	events.Get("/:id/likes", controllers.GetLikesForEvent)
 	// ユーザーがいいねしたイベント一覧
 	events.Get("/:id/liked_events", controllers.UserLikedEvents)
+	// ユーザーが参加したイベント一覧
+	events.Get("/:id/participated_events", controllers.UserParticipatedEvents)
 	// イベントの参加者一覧
 	events.Get("/:id/participants", controllers.GetEventParticipants)
 

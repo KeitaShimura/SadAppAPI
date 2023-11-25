@@ -198,6 +198,46 @@ func UserLikedEvents(c *fiber.Ctx) error {
 	return c.JSON(events)
 }
 
+func UserParticipatedEvents(c *fiber.Ctx) error {
+	// Retrieve the user ID (adjust this part based on how you manage user identification)
+	userID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid user ID",
+		})
+	}
+
+	// Get pagination parameters (reuse your existing function or define one)
+	page, pageSize := getPaginationParameters(c)
+
+	// Find IDs of events liked by the user
+	var eventParticipants []models.EventParticipant
+	database.DB.Where("user_id = ?", userID).Find(&eventParticipants)
+
+	// Extract event IDs
+	var eventIds []uint
+	for _, eventParticipant := range eventParticipants {
+		eventIds = append(eventIds, eventParticipant.EventId)
+	}
+
+	// Fetch the events based on the event IDs
+	var events []models.Event
+	result := database.DB.Where("id IN ?", eventIds).
+		Preload("User").
+		Limit(pageSize).
+		Offset((page - 1) * pageSize).
+		Find(&events)
+
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Cannot retrieve participated events",
+		})
+	}
+
+	// Return the list of participated events as JSON
+	return c.JSON(events)
+}
+
 func DeleteEvent(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
 
