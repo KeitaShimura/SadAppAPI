@@ -126,7 +126,7 @@ func Setup(app *fiber.App) {
 	eventComments.Get("/:event_id", controllers.EventComments)
 	// コメントの作成（認証が必要）
 	userEventCommentsAuthenticated := eventComments.Use(middlewares.IsAuthenticated)
-	userEventCommentsAuthenticated.Post("/", controllers.CreateEventComment)
+	userEventCommentsAuthenticated.Post("/:id", controllers.CreateEventComment)
 	// コメントの更新（認証が必要）
 	userEventCommentsAuthenticated.Put("/:id", controllers.UpdateEventComment)
 	// コメントの削除（認証が必要）
