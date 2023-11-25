@@ -114,7 +114,7 @@ func Setup(app *fiber.App) {
 	// イベントがいいねされたかチェック（認証が必要）
 	userEventsAuthenticated.Get("/:id/check_like", controllers.CheckIfEventLiked)
 	// イベントへの参加（認証が必要）
-	userEventsAuthenticated.Post("/:id/join", controllers.JoinEvent)
+	userEventsAuthenticated.Post("/:id/participation", controllers.ParticipationEvent)
 	// イベント参加の解除（認証が必要）
 	userEventsAuthenticated.Delete("/:id/leave", controllers.LeaveEvent)
 	// イベントがいいねされたかチェック（認証が必要）

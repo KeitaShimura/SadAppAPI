@@ -10,7 +10,7 @@ import (
 )
 
 // イベントへの参加
-func JoinEvent(c *fiber.Ctx) error {
+func ParticipationEvent(c *fiber.Ctx) error {
 	// ログインユーザーのIDを取得
 	authUserId, _ := middlewares.GetUserId(c)
 
