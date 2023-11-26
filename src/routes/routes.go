@@ -29,6 +29,42 @@ func Setup(app *fiber.App) {
 	// 特定ユーザーのイベント一覧を取得
 	user.Get("/user_events/:id", controllers.UserEvents)
 
+	// 投稿関連のルート設定
+	posts := user.Group("/posts")
+	// 投稿一覧取得
+	posts.Get("", controllers.Posts)
+	// 特定の投稿詳細取得
+	posts.Get("/:id", controllers.GetPost)
+	// 投稿のいいね数取得
+	posts.Get("/:id/likes", controllers.GetLikesForPost)
+	// ユーザーがいいねした投稿一覧
+	posts.Get("/:id/liked_posts", controllers.UserLikedPosts)
+
+	// コメント関連のルート設定（投稿）
+	postComments := posts.Group("comments")
+	// 特定の投稿に対するコメント一覧を取得
+	postComments.Get("/:id", controllers.PostComments)
+
+	// イベント関連のルート設定
+	events := user.Group("/events")
+	// イベント一覧取得
+	events.Get("", controllers.Events)
+	// 特定のイベント詳細取得
+	events.Get("/:id", controllers.GetEvent)
+	// イベントのいいね数取得
+	events.Get("/:id/likes", controllers.GetLikesForEvent)
+	// ユーザーがいいねしたイベント一覧
+	events.Get("/:id/liked_events", controllers.UserLikedEvents)
+	// ユーザーが参加したイベント一覧
+	events.Get("/:id/participated_events", controllers.UserParticipatedEvents)
+	// イベントの参加者一覧
+	events.Get("/:id/participants", controllers.GetEventParticipants)
+
+	// コメント関連のルート設定（イベント）
+	eventComments := events.Group("comments")
+	// 特定のイベントに対するコメント一覧を取得
+	eventComments.Get("/:event_id", controllers.EventComments)
+
 	// 認証が必要なユーザー関連のルート設定
 	userAuthenticated := user.Use(middlewares.IsAuthenticated)
 	// 認証済みユーザーの情報取得
@@ -46,17 +82,6 @@ func Setup(app *fiber.App) {
 	// フォローチェック
 	userAuthenticated.Get("check_if_following/:id", controllers.CheckIfFollowing)
 
-	// 投稿関連のルート設定
-	posts := user.Group("/posts")
-	// 投稿一覧取得
-	posts.Get("", controllers.Posts)
-	// 特定の投稿詳細取得
-	posts.Get("/:id", controllers.GetPost)
-	// 投稿のいいね数取得
-	posts.Get("/:id/likes", controllers.GetLikesForPost)
-	// ユーザーがいいねした投稿一覧
-	posts.Get("/:id/liked_posts", controllers.UserLikedPosts)
-
 	// 認証が必要な投稿関連のルート設定
 	userPostsAuthenticated := posts.Use(middlewares.IsAuthenticated)
 	// 投稿の作成
@@ -72,10 +97,6 @@ func Setup(app *fiber.App) {
 	// 投稿がいいねされたかチェック
 	userPostsAuthenticated.Get("/:id/check_like", controllers.CheckIfPostLiked)
 
-	// コメント関連のルート設定（投稿）
-	postComments := posts.Group("comments")
-	// 特定の投稿に対するコメント一覧を取得
-	postComments.Get("/:post_id", controllers.PostComments)
 	// コメントの作成（認証が必要）
 	userPostCommentsAuthenticated := postComments.Use(middlewares.IsAuthenticated)
 	userPostCommentsAuthenticated.Post("/:id", controllers.CreatePostComment)
@@ -83,21 +104,6 @@ func Setup(app *fiber.App) {
 	userPostCommentsAuthenticated.Put("/:id", controllers.UpdatePostComment)
 	// コメントの削除（認証が必要）
 	userPostCommentsAuthenticated.Delete("/:id", controllers.DeletePostComment)
-
-	// イベント関連のルート設定
-	events := user.Group("/events")
-	// イベント一覧取得
-	events.Get("", controllers.Events)
-	// 特定のイベント詳細取得
-	events.Get("/:id", controllers.GetEvent)
-	// イベントのいいね数取得
-	events.Get("/:id/likes", controllers.GetLikesForEvent)
-	// ユーザーがいいねしたイベント一覧
-	events.Get("/:id/liked_events", controllers.UserLikedEvents)
-	// ユーザーが参加したイベント一覧
-	events.Get("/:id/participated_events", controllers.UserParticipatedEvents)
-	// イベントの参加者一覧
-	events.Get("/:id/participants", controllers.GetEventParticipants)
 
 	// 認証が必要なイベント関連のルート設定
 	userEventsAuthenticated := events.Use(middlewares.IsAuthenticated)
@@ -120,10 +126,6 @@ func Setup(app *fiber.App) {
 	// イベントがいいねされたかチェック（認証が必要）
 	userEventsAuthenticated.Get("/:id/check_participant", controllers.CheckIfEventParticipated)
 
-	// コメント関連のルート設定（イベント）
-	eventComments := events.Group("comments")
-	// 特定のイベントに対するコメント一覧を取得
-	eventComments.Get("/:event_id", controllers.EventComments)
 	// コメントの作成（認証が必要）
 	userEventCommentsAuthenticated := eventComments.Use(middlewares.IsAuthenticated)
 	userEventCommentsAuthenticated.Post("/:id", controllers.CreateEventComment)

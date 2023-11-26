@@ -12,7 +12,7 @@ import (
 func PostComments(c *fiber.Ctx) error {
 	postId, _ := strconv.Atoi(c.Params("id"))
 	var comments []models.PostComment
-	database.DB.Where("post_id = ?", postId).Find(&comments)
+	database.DB.Preload("User").Where("post_id = ?", postId).Find(&comments)
 	return c.JSON(comments)
 }
 
