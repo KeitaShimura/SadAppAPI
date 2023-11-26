@@ -99,7 +99,7 @@ func GetEvent(c *fiber.Ctx) error {
 		Id: uint(id),
 	}
 
-	database.DB.Find(&event)
+	database.DB.Preload("User").Preload("EventComment").Find(&event)
 
 	return c.JSON(event)
 }
