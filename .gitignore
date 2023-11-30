@@ -1,3 +1,4 @@
 docker-compose.yaml
+docker-compose.prod.yaml
 .dbdata
 tmp
