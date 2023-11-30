@@ -3,9 +3,11 @@ package database
 import (
 	"SadApp/src/models"
 	"fmt"
+	"log"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
+	"gorm.io/gorm/logger"
 )
 
 // DB は、データベース接続を保持するためのグローバル変数です。
@@ -18,7 +20,9 @@ func Connect() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?%s", DBUsername, DBPassword, DBHost, DBPort, DBName, DBParameters)
 
 	// データベースに接続を開きます。
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode((logger.Silent)),
+	})
 
 	// データベース接続時のエラーをチェックします。
 	if err != nil {
