@@ -32,7 +32,7 @@ func Setup(app *fiber.App) {
 	// 投稿関連のルート設定
 	posts := user.Group("/posts")
 	// 投稿一覧取得
-	posts.Get("", controllers.Posts)
+	posts.Get("/", controllers.Posts)
 	// 特定の投稿詳細取得
 	posts.Get("/:id", controllers.GetPost)
 	// 投稿のいいね数取得
@@ -48,7 +48,7 @@ func Setup(app *fiber.App) {
 	// イベント関連のルート設定
 	events := user.Group("/events")
 	// イベント一覧取得
-	events.Get("", controllers.Events)
+	events.Get("/", controllers.Events)
 	// 特定のイベント詳細取得
 	events.Get("/:id", controllers.GetEvent)
 	// イベントのいいね数取得

@@ -147,14 +147,7 @@ func CreateEvent(c *fiber.Ctx) error {
 			"error": "コメントは1文字以上500文字以下である必要があります。",
 		})
 	}
-
-	// イベント日付のバリデーション
-	if !isValidDateFormat(event.EventDate) {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "不正な日付形式です。日付はYYYY-MM-DD HH:mmの形式で指定してください。",
-		})
-	}
-
+	
 	// Assign the retrieved user ID to the event
 	event.UserId = userId // Assuming your event model has a UserId field
 
@@ -201,13 +194,6 @@ func UpdateEvent(c *fiber.Ctx) error {
 	if len(event.Event_URL) > 255 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "イベントURLは255文字以下である必要があります。",
-		})
-	}
-
-	// イベント日付のバリデーション
-	if !isValidDateFormat(event.EventDate) {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "不正な日付形式です。日付はYYYY-MM-DD HH:mmの形式で指定してください。",
 		})
 	}
 
