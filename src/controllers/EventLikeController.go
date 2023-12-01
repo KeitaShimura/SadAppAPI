@@ -65,7 +65,7 @@ func GetLikesForEvent(c *fiber.Ctx) error {
 	}
 
 	var likes []models.EventLike
-	database.DB.Where("event_id = ?", eventId).Find(&likes)
+	database.DB.Where("event_id = ?", eventId).Order("created_at DESC").Find(&likes)
 
 	return c.JSON(likes)
 }

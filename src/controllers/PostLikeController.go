@@ -65,7 +65,7 @@ func GetLikesForPost(c *fiber.Ctx) error {
 	}
 
 	var likes []models.PostLike
-	database.DB.Where("post_id = ?", postId).Find(&likes)
+	database.DB.Where("post_id = ?", postId).Order("created_at DESC").Find(&likes)
 
 	return c.JSON(likes)
 }

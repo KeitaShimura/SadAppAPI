@@ -10,7 +10,7 @@ import (
 
 func GetAllUsers(c *fiber.Ctx) error {
 	var users []models.User
-	result := database.DB.Find(&users)
+	result := database.DB.Order("created_at DESC").Find(&users)
 	if result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "ユーザー情報の取得に失敗しました",

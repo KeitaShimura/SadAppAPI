@@ -37,6 +37,7 @@ func Events(c *fiber.Ctx) error {
 	var events []models.Event
 	result := database.DB.Where("user_id IN ?", followerIds).
 		Preload("User").
+		Order("created_at DESC").
 		Limit(pageSize).
 		Offset((page - 1) * pageSize).
 		Find(&events)
@@ -79,6 +80,7 @@ func UserEvents(c *fiber.Ctx) error {
 
 	result := database.DB.Where("user_id = ?", userID).
 		Preload("User").
+		Order("created_at DESC").
 		Limit(pageSize).
 		Offset((page - 1) * pageSize).
 		Find(&events)
@@ -226,6 +228,7 @@ func UserLikedEvents(c *fiber.Ctx) error {
 	var events []models.Event
 	result := database.DB.Where("id IN ?", eventIds).
 		Preload("User").
+		Order("created_at DESC").
 		Limit(pageSize).
 		Offset((page - 1) * pageSize).
 		Find(&events)
@@ -266,6 +269,7 @@ func UserParticipatedEvents(c *fiber.Ctx) error {
 	var events []models.Event
 	result := database.DB.Where("id IN ?", eventIds).
 		Preload("User").
+		Order("created_at DESC").
 		Limit(pageSize).
 		Offset((page - 1) * pageSize).
 		Find(&events)

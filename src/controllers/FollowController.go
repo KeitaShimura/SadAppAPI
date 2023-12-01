@@ -66,7 +66,7 @@ func GetFollowings(c *fiber.Ctx) error {
 	}
 
 	var following []models.Follow
-	database.DB.Where("following_id = ?", userID).Find(&following)
+	database.DB.Where("following_id = ?", userID).Order("created_at DESC").Find(&following)
 
 	return c.JSON(following)
 }
@@ -78,7 +78,7 @@ func GetFollowers(c *fiber.Ctx) error {
 	}
 
 	var followers []models.Follow
-	database.DB.Where("follower_id = ?", userID).Find(&followers)
+	database.DB.Where("follower_id = ?", userID).Order("created_at DESC").Find(&followers)
 
 	return c.JSON(followers)
 }

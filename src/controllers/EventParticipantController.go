@@ -73,7 +73,7 @@ func GetEventParticipants(c *fiber.Ctx) error {
 
 	// EventParticipant モデルを使用して、特定のイベントIDに対する参加者を取得
 	var participants []models.EventParticipant
-	database.DB.Where("event_id = ?", eventId).Find(&participants)
+	database.DB.Where("event_id = ?", eventId).Order("created_at DESC").Find(&participants)
 
 	// 取得した参加者のリストをJSONとして返す
 	return c.JSON(participants)

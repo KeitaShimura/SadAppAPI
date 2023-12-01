@@ -38,6 +38,7 @@ func Posts(c *fiber.Ctx) error {
 	var posts []models.Post
 	result := database.DB.Where("user_id IN ?", followerIds).
 		Preload("User").
+		Order("created_at DESC").
 		Limit(pageSize).
 		Offset((page - 1) * pageSize).
 		Find(&posts)
@@ -80,6 +81,7 @@ func UserPosts(c *fiber.Ctx) error {
 
 	result := database.DB.Where("user_id = ?", userID).
 		Preload("User").
+		Order("created_at DESC").
 		Limit(pageSize).
 		Offset((page - 1) * pageSize).
 		Find(&posts)
@@ -213,6 +215,7 @@ func UserLikedPosts(c *fiber.Ctx) error {
 	var posts []models.Post
 	result := database.DB.Where("id IN ?", postIds).
 		Preload("User").
+		Order("created_at DESC").
 		Limit(pageSize).
 		Offset((page - 1) * pageSize).
 		Find(&posts)

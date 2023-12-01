@@ -13,7 +13,7 @@ import (
 func EventComments(c *fiber.Ctx) error {
 	eventId, _ := strconv.Atoi(c.Params("event_id"))
 	var comments []models.EventComment
-	database.DB.Preload("User").Where("event_id = ?", eventId).Find(&comments)
+	database.DB.Preload("User").Where("event_id = ?", eventId).Order("created_at DESC").Find(&comments)
 	return c.JSON(comments)
 }
 
