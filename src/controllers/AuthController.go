@@ -5,49 +5,70 @@ import (
 	"SadApp/src/database"
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
-	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt" // JWTを使用するためのパッケージをインポート
+	"net/mail"
 	"strconv"
 	"time"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt" // JWTを使用するためのパッケージをインポート
 )
 
-// Register 関数は、新しいユーザーを登録するための関数です。
+// ユーザー登録のための関数
 func Register(c *fiber.Ctx) error {
-	var data map[string]string // リクエストボディからデータを取得するためのマップ
+	var data map[string]string
 
-	// リクエストボディの解析を試みる。エラーがあれば、それを返す。
+	// リクエストボディを解析する
 	if err := c.BodyParser(&data); err != nil {
 		return err
 	}
 
-	// パスワードとパスワード確認が一致していない場合、400ステータスコードを返す。
-	if data["password"] != data["password_confirm"] {
+	// 名前のバリデーション (3文字以上、20文字以下)
+	nameLength := len(data["name"])
+	if nameLength < 3 || nameLength > 20 {
 		c.Status(400)
 		return c.JSON(fiber.Map{
-			"message": "パスワードが一致しません。", // エラーメッセージをJSONで返す
+			"message": "名前は3文字以上20文字以下である必要があります。",
 		})
 	}
 
-	// Userモデルのインスタンスを作成する。
+	// メールアドレスのバリデーション
+	if !isValidEmail(data["email"]) {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "無効なメールアドレスです。",
+		})
+	}
+
+	// パスワードバリデーション (6文字以上)
+	if len(data["password"]) < 6 {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "パスワードは6文字以上である必要があります。",
+		})
+	}
+
+	// パスワードとパスワード確認の一致チェック
+	if data["password"] != data["password_confirm"] {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "パスワードが一致しません。",
+		})
+	}
+
+	// Userモデルのインスタンスを作成
 	user := models.User{
 		Name:  data["name"],
 		Email: data["email"],
 	}
 
-	// ユーザーのパスワードをハッシュ化して保存
+	// パスワードのハッシュ化
 	user.SetPassword(data["password"])
 
-	// データベースにユーザーを保存する。
+	// データベースにユーザーを保存
 	database.DB.Create(&user)
 
 	// JWTトークンの生成
-	payload := jwt.StandardClaims{
-		Subject:   strconv.Itoa(int(user.Id)),
-		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-	}
-
-	// JWTトークンを生成し、エラーがあれば処理を返す。
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
+	token, err := createJWTToken(user)
 	if err != nil {
 		c.Status(fiber.StatusBadRequest)
 		return c.JSON(fiber.Map{
@@ -55,18 +76,46 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	// クッキーにJWTトークンを設定する。
+	// JWTトークンをクッキーに設定
+	setTokenCookie(c, token)
+
+	// レスポンスの準備
+	response := prepareResponse(user, token)
+
+	// レスポンスを返す
+	return c.JSON(response)
+}
+
+// メールアドレスの形式を確認するヘルパー関数
+func isValidEmail(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
+}
+
+// JWTトークンを生成する関数
+func createJWTToken(user models.User) (string, error) {
+	payload := jwt.StandardClaims{
+		Subject:   strconv.Itoa(int(user.Id)),
+		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+	}
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte("secret"))
+	return token, err
+}
+
+// JWTトークンをクッキーに設定する関数
+func setTokenCookie(c *fiber.Ctx, token string) {
 	cookie := fiber.Cookie{
 		Name:     "jwt",
 		Value:    token,
 		Expires:  time.Now().Add(time.Hour * 24),
 		HTTPOnly: true,
 	}
-
 	c.Cookie(&cookie)
+}
 
-	// ユーザーデータにトークンを追加したJSONを作成
-	response := struct {
+// レスポンスの準備をする関数
+func prepareResponse(user models.User, token string) interface{} {
+	return struct {
 		Id        uint   `json:"id"`
 		Name      string `json:"name"`
 		Email     string `json:"email"`
@@ -74,7 +123,7 @@ func Register(c *fiber.Ctx) error {
 		Icon      string `json:"icon"`
 		Banner    string `json:"banner"`
 		Location  string `json:"location"`
-		WibSite   string `json:"website"`
+		WebSite   string `json:"website"`
 		BirthDate string `json:"birth_date"`
 		Token     string `json:"token"`
 	}{
@@ -85,13 +134,10 @@ func Register(c *fiber.Ctx) error {
 		Icon:      user.Icon,
 		Banner:    user.Banner,
 		Location:  user.Location,
-		WibSite:   user.WibSite,
+		WebSite:   user.WebSite,
 		BirthDate: user.BirthDate,
 		Token:     token,
 	}
-
-	// 認証が成功したユーザーデータをJSON形式で返す。
-	return c.JSON(response)
 }
 
 // Login 関数は、ユーザーのログイン処理を行う関数です。
@@ -159,7 +205,7 @@ func Login(c *fiber.Ctx) error {
 		Icon      string `json:"icon"`
 		Banner    string `json:"banner"`
 		Location  string `json:"location"`
-		WibSite   string `json:"website"`
+		WebSite   string `json:"website"`
 		BirthDate string `json:"birth_date"`
 		Token     string `json:"token"`
 	}{
@@ -170,7 +216,7 @@ func Login(c *fiber.Ctx) error {
 		Icon:      user.Icon,
 		Banner:    user.Banner,
 		Location:  user.Location,
-		WibSite:   user.WibSite,
+		WebSite:   user.WebSite,
 		BirthDate: user.BirthDate,
 		Token:     token,
 	}

@@ -48,7 +48,7 @@ func GetUser(c *fiber.Ctx) error {
 		"name":       user.Name,
 		"bio":        user.Bio,
 		"location":   user.Location,
-		"website":    user.WibSite,
+		"website":    user.WebSite,
 		"birth_date": user.Bio,
 		"icon":       user.Icon,
 		"banner":     user.Banner,
@@ -85,7 +85,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	user.Icon = data["icon"]
 	user.Banner = data["banner"]
 	user.Location = data["location"]
-	user.WibSite = data["website"]
+	user.WebSite = data["website"]
 	user.BirthDate = data["birth_date"]
 
 	// 更新されたデータをデータベースに保存

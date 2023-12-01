@@ -15,7 +15,7 @@ type User struct {
 	Icon      string    `json:"icon" gorm:"type:text;nullable"`   // ユーザーのアイコン画像
 	Banner    string    `json:"banner" gorm:"type:text;nullable"` // ユーザーの背景画像
 	Location  string    `json:"location" gorm:"nullable"`         // ユーザーの居住地
-	WibSite   string    `json:"website" gorm:"nullable"`          // ユーザーのウェブサイト
+	WebSite   string    `json:"website" gorm:"nullable"`          // ユーザーのウェブサイト
 	BirthDate string    `json:"birth_date" gorm:"nullable"`       // ユーザーの生年月日
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"nullable"`
