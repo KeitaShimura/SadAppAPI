@@ -5,6 +5,7 @@ import (
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
 	"strconv"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,7 +22,7 @@ func CreateEventComment(c *fiber.Ctx) error {
 	userId, err := middlewares.GetUserId(c)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "Unauthorized",
+			"error": "認証に失敗しました。",
 		})
 	}
 
@@ -29,7 +30,7 @@ func CreateEventComment(c *fiber.Ctx) error {
 	eventId, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid event ID",
+			"error": "無効なイベントIDです。",
 		})
 	}
 
@@ -39,7 +40,15 @@ func CreateEventComment(c *fiber.Ctx) error {
 	// リクエストボディをコメントオブジェクトに解析
 	if err := c.BodyParser(&comment); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Bad request",
+			"error": "不正なリクエストです。",
+		})
+	}
+
+	// コメント内容のバリデーション
+	content := strings.TrimSpace(comment.Content)
+	if len(content) == 0 || len(content) > 500 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "コメントは1文字以上500文字以下である必要があります。",
 		})
 	}
 
@@ -51,7 +60,7 @@ func CreateEventComment(c *fiber.Ctx) error {
 	result := database.DB.Create(&comment)
 	if result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Cannot create comment",
+			"error": "コメントを作成できませんでした。",
 		})
 	}
 
@@ -66,7 +75,7 @@ func UpdateEventComment(c *fiber.Ctx) error {
 	commentId, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid comment ID",
+			"error": "無効なコメントIDです。",
 		})
 	}
 
@@ -75,14 +84,22 @@ func UpdateEventComment(c *fiber.Ctx) error {
 	result := database.DB.Preload("User").First(&comment, commentId)
 	if result.Error != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Comment not found",
+			"error": "コメントが見つかりません。",
 		})
 	}
 
 	// リクエストボディから更新データを解析
 	if err := c.BodyParser(&comment); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Bad request",
+			"error": "不正なリクエストです。",
+		})
+	}
+
+	// コメント内容のバリデーション
+	content := strings.TrimSpace(comment.Content)
+	if len(content) == 0 || len(content) > 500 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "コメントは1文字以上500文字以下である必要があります。",
 		})
 	}
 
@@ -90,7 +107,7 @@ func UpdateEventComment(c *fiber.Ctx) error {
 	result = database.DB.Save(&comment)
 	if result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Cannot update comment",
+			"error": "コメントを更新できませんでした。",
 		})
 	}
 
