@@ -5,6 +5,7 @@ import (
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -140,9 +141,10 @@ func CreateEvent(c *fiber.Ctx) error {
 	}
 
 	// イベントURLのバリデーション
-	if len(event.Event_URL) > 255 {
+	content := strings.TrimSpace(event.Content)
+	if len(content) == 0 || len(content) > 500 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "イベントURLは255文字以下である必要があります。",
+			"error": "コメントは1文字以上500文字以下である必要があります。",
 		})
 	}
 
@@ -189,9 +191,10 @@ func UpdateEvent(c *fiber.Ctx) error {
 		})
 	}
 
-	if len(event.Content) > 500 {
+	content := strings.TrimSpace(event.Content)
+	if len(content) == 0 || len(content) > 500 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "イベント内容は500文字以下である必要があります。",
+			"error": "コメントは1文字以上500文字以下である必要があります。",
 		})
 	}
 

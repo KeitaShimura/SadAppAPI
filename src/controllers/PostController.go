@@ -5,6 +5,7 @@ import (
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
 	"strconv"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -105,41 +106,48 @@ func GetPost(c *fiber.Ctx) error {
 }
 
 func CreatePost(c *fiber.Ctx) error {
-	// First, get the user ID from the JWT token
+	// 最初にJWTトークンからユーザーIDを取得します
 	userId, err := middlewares.GetUserId(c)
 	if err != nil {
-		// If there's an error retrieving the user ID, return an error
+		// ユーザーIDを取得できない場合はエラーを返します
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "Unauthorized",
+			"error": "認証に失敗しました。",
 		})
 	}
 
-	// Initialize a new Post struct
+	// 新しいPost構造体を初期化します
 	var post models.Post
 
-	// Parse the request body into the post struct
+	// リクエストボディをPost構造体に解析します
 	if err := c.BodyParser(&post); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Bad request",
+			"error": "不正なリクエストです。",
 		})
 	}
 
-	// Assign the retrieved user ID to the post
-	post.UserId = userId // Assuming your Post model has a UserId field
+	content := strings.TrimSpace(post.Content)
+	if len(content) == 0 || len(content) > 500 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "コメントは1文字以上500文字以下である必要があります。",
+		})
+	}
 
-	// Create the post in the database
+	// 取得したユーザーIDをPostに割り当てます
+	post.UserId = userId // PostモデルにUserIdフィールドがあると仮定しています
+
+	// データベースにPostを作成します
 	result := database.DB.Create(&post)
 	if result.Error != nil {
-		// Handle creation error
+		// 作成時のエラーを処理します
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Cannot create post",
+			"error": "投稿の作成に失敗しました。",
 		})
 	}
 
-	// Load the User data for the created post
+	// 作成された投稿のUserデータを読み込みます
 	database.DB.Preload("User").Find(&post, post.Id)
 
-	// Return the created post as JSON
+	// 作成された投稿をJSON形式で返します
 	return c.JSON(post)
 }
 
@@ -150,10 +158,18 @@ func UpdatePost(c *fiber.Ctx) error {
 		Id: uint(id),
 	}
 
+	content := strings.TrimSpace(post.Content)
+	if len(content) == 0 || len(content) > 500 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "コメントは1文字以上500文字以下である必要があります。",
+		})
+	}
+
 	if err := c.BodyParser(&post); err != nil {
 		return err
 	}
 
+	// Postを更新します
 	database.DB.Model(&post).Updates(post)
 
 	return c.JSON(post)
