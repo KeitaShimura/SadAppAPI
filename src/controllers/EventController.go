@@ -4,11 +4,9 @@ import (
 	"SadApp/src/database"
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
+	"github.com/gofiber/fiber/v2"
 	"strconv"
 	"strings"
-	"time"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 func Events(c *fiber.Ctx) error {
@@ -147,7 +145,7 @@ func CreateEvent(c *fiber.Ctx) error {
 			"error": "コメントは1文字以上500文字以下である必要があります。",
 		})
 	}
-	
+
 	// Assign the retrieved user ID to the event
 	event.UserId = userId // Assuming your event model has a UserId field
 
@@ -292,13 +290,4 @@ func DeleteEvent(c *fiber.Ctx) error {
 	database.DB.Delete(&event)
 
 	return nil
-}
-
-func isValidDateFormat(dateStr string) bool {
-	// 期待される日付形式を指定
-	expectedFormat := "2006-01-02 15:04" // "YYYY-MM-DD HH:mm" の形式
-
-	// 指定の形式でパースを試みる
-	_, err := time.Parse(expectedFormat, dateStr)
-	return err == nil
 }
