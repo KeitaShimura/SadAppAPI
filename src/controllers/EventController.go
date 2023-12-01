@@ -5,6 +5,7 @@ import (
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -105,22 +106,50 @@ func GetEvent(c *fiber.Ctx) error {
 }
 
 func CreateEvent(c *fiber.Ctx) error {
-	// First, get the user ID from the JWT token
+	// まず、JWTトークンからユーザーIDを取得
 	userId, err := middlewares.GetUserId(c)
 	if err != nil {
-		// If there's an error retrieving the user ID, return an error
+		// ユーザーIDを取得できない場合、エラーを返す
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "Unauthorized",
+			"error": "認証に失敗しました。",
 		})
 	}
 
-	// Initialize a new event struct
+	// 新しいイベント構造体を初期化
 	var event models.Event
 
-	// Parse the request body into the event struct
+	// リクエストボディをイベント構造体に解析
 	if err := c.BodyParser(&event); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Bad request",
+			"error": "不正なリクエストです。",
+		})
+	}
+
+	// イベントタイトルのバリデーション
+	if len(event.Title) == 0 || len(event.Title) > 100 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "イベントタイトルは1文字以上100文字以下である必要があります。",
+		})
+	}
+
+	// イベント内容のバリデーション
+	if len(event.Content) > 500 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "イベント内容は500文字以下である必要があります。",
+		})
+	}
+
+	// イベントURLのバリデーション
+	if len(event.Event_URL) > 255 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "イベントURLは255文字以下である必要があります。",
+		})
+	}
+
+	// イベント日付のバリデーション
+	if !isValidDateFormat(event.EventDate) {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "不正な日付形式です。日付はYYYY-MM-DD HH:mmの形式で指定してください。",
 		})
 	}
 
@@ -132,7 +161,7 @@ func CreateEvent(c *fiber.Ctx) error {
 	if result.Error != nil {
 		// If there's an error during the creation, return the error
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Cannot create event",
+			"error": "イベントを作成できませんでした。",
 		})
 	}
 
@@ -151,6 +180,32 @@ func UpdateEvent(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&event); err != nil {
 		return err
+	}
+
+	// 更新データのバリデーション
+	if len(event.Title) == 0 || len(event.Title) > 100 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "イベントタイトルは1文字以上100文字以下である必要があります。",
+		})
+	}
+
+	if len(event.Content) > 500 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "イベント内容は500文字以下である必要があります。",
+		})
+	}
+
+	if len(event.Event_URL) > 255 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "イベントURLは255文字以下である必要があります。",
+		})
+	}
+
+	// イベント日付のバリデーション
+	if !isValidDateFormat(event.EventDate) {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "不正な日付形式です。日付はYYYY-MM-DD HH:mmの形式で指定してください。",
+		})
 	}
 
 	database.DB.Model(&event).Updates(event)
@@ -248,4 +303,13 @@ func DeleteEvent(c *fiber.Ctx) error {
 	database.DB.Delete(&event)
 
 	return nil
+}
+
+func isValidDateFormat(dateStr string) bool {
+	// 期待される日付形式を指定
+	expectedFormat := "2006-01-02 15:04" // "YYYY-MM-DD HH:mm" の形式
+
+	// 指定の形式でパースを試みる
+	_, err := time.Parse(expectedFormat, dateStr)
+	return err == nil
 }
