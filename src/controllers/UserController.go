@@ -4,8 +4,10 @@ import (
 	"SadApp/src/database"
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
-	"github.com/gofiber/fiber/v2"
 	"strconv"
+
+	"github.com/gofiber/fiber/v2"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetAllUsers(c *fiber.Ctx) error {
@@ -188,11 +190,39 @@ func UpdatePassword(c *fiber.Ctx) error {
 		return err
 	}
 
+	// ミドルウェアを通じて現在のユーザーIDを取得
+	id, _ := middlewares.GetUserId(c)
+
+	// 更新対象のユーザーモデルを作成
+	user := models.User{
+		Id: id,
+	}
+
+	database.DB.Where("id = ?", id).First(&user)
+
+	// 古いパスワードが一致しない場合、エラーを返す
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["current_password"])); err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"error":   "current_password_mismatch",
+			"message": "現在のパスワードが正しくありません。",
+		})
+	}
+
+	// データベースからユーザー情報を取得
+	if err := database.DB.Where(&user).First(&user).Error; err != nil {
+		// ユーザーが見つからない場合や古いパスワードが一致しない場合はエラーレスポンスを返す
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "現在のパスワードが正しくありません。",
+		})
+	}
+
 	// パスワードとパスワード確認が一致していない場合、400ステータスコードを返す。
 	if data["password"] != data["password_confirm"] {
 		c.Status(400)
 		return c.JSON(fiber.Map{
-			"message": "パスワードが一致しません。", // エラーメッセージをJSONで返す
+			"error": "パスワードとパスワード確認が一致しません。",
 		})
 	}
 
@@ -204,14 +234,6 @@ func UpdatePassword(c *fiber.Ctx) error {
 		})
 	}
 
-	// ミドルウェアを通じて現在のユーザーIDを取得
-	id, _ := middlewares.GetUserId(c)
-
-	// 更新対象のユーザーモデルを作成
-	user := models.User{
-		Id: id,
-	}
-
 	// ユーザーモデルに新しいパスワードを設定
 	user.SetPassword(data["password"])
 
@@ -219,5 +241,7 @@ func UpdatePassword(c *fiber.Ctx) error {
 	database.DB.Model(&user).Updates(&user)
 
 	// 更新されたユーザー情報をJSON形式でレスポンスとして返す
-	return c.JSON(user)
+	return c.JSON(fiber.Map{
+		"message": "パスワードが更新されました。",
+	})
 }

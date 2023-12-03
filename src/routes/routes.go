@@ -76,7 +76,7 @@ func Setup(app *fiber.App) {
 	// メールアドレスの更新
 	userAuthenticated.Put("/email", controllers.UpdateEmail)
 	// パスワードの更新
-	userAuthenticated.Put("/user/password", controllers.UpdatePassword)
+	userAuthenticated.Put("/password", controllers.UpdatePassword)
 	// フォロー
 	userAuthenticated.Post("follow/:id", controllers.Follow)
 	// フォロー解除
