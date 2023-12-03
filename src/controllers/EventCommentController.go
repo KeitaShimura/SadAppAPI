@@ -41,7 +41,6 @@ func EventComments(c *fiber.Ctx) error {
 	return c.JSON(comments)
 }
 
-
 func CreateEventComment(c *fiber.Ctx) error {
 	// JWTトークンからユーザーIDを取得
 	userId, err := middlewares.GetUserId(c)
