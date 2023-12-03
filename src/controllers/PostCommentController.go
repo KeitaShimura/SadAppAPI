@@ -11,9 +11,33 @@ import (
 )
 
 func PostComments(c *fiber.Ctx) error {
-	postId, _ := strconv.Atoi(c.Params("id"))
+	postId, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid post ID",
+		})
+	}
+
+	// ページ番号とページサイズを取得
+	page, pageSize := getPaginationParameters(c)
+
 	var comments []models.PostComment
-	database.DB.Preload("User").Where("post_id = ?", postId).Order("created_at DESC").Find(&comments)
+	var total int64
+	database.DB.Model(&models.PostComment{}).Where("post_id = ?", postId).Count(&total)
+
+	result := database.DB.Preload("User").
+		Where("post_id = ?", postId).
+		Order("created_at DESC").
+		Limit(pageSize).
+		Offset((page - 1) * pageSize).
+		Find(&comments)
+
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Cannot retrieve comments for the post",
+		})
+	}
+
 	return c.JSON(comments)
 }
 

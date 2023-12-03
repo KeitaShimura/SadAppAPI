@@ -61,21 +61,10 @@ func UserPosts(c *fiber.Ctx) error {
 		})
 	}
 
+	// ページ番号とページサイズを取得
+	page, pageSize := getPaginationParameters(c)
+
 	var posts []models.Post
-	// ページ番号を取得
-	page := 1
-	pageSize := 100
-
-	// クエリから 'page' を取得
-	if p, err := strconv.Atoi(c.Query("page", "1")); err == nil && p > 0 {
-		page = p
-	}
-
-	// クエリから 'pageSize' を取得
-	if ps, err := strconv.Atoi(c.Query("pageSize", "100")); err == nil && ps > 0 {
-		pageSize = ps
-	}
-
 	var total int64
 	database.DB.Model(&models.Post{}).Where("user_id = ?", userID).Count(&total)
 

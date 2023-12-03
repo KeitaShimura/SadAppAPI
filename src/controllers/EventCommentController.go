@@ -11,11 +11,36 @@ import (
 )
 
 func EventComments(c *fiber.Ctx) error {
-	eventId, _ := strconv.Atoi(c.Params("event_id"))
+	eventId, err := strconv.Atoi(c.Params("event_id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid event ID",
+		})
+	}
+
+	// ページ番号とページサイズを取得
+	page, pageSize := getPaginationParameters(c)
+
 	var comments []models.EventComment
-	database.DB.Preload("User").Where("event_id = ?", eventId).Order("created_at DESC").Find(&comments)
+	var total int64
+	database.DB.Model(&models.EventComment{}).Where("event_id = ?", eventId).Count(&total)
+
+	result := database.DB.Preload("User").
+		Where("event_id = ?", eventId).
+		Order("created_at DESC").
+		Limit(pageSize).
+		Offset((page - 1) * pageSize).
+		Find(&comments)
+
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Cannot retrieve comments for the event",
+		})
+	}
+
 	return c.JSON(comments)
 }
+
 
 func CreateEventComment(c *fiber.Ctx) error {
 	// JWTトークンからユーザーIDを取得
