@@ -64,7 +64,7 @@ func UserPosts(c *fiber.Ctx) error {
 	var posts []models.Post
 	// ページ番号を取得
 	page := 1
-	pageSize := 50
+	pageSize := 100
 
 	// クエリから 'page' を取得
 	if p, err := strconv.Atoi(c.Query("page", "1")); err == nil && p > 0 {
@@ -72,7 +72,7 @@ func UserPosts(c *fiber.Ctx) error {
 	}
 
 	// クエリから 'pageSize' を取得
-	if ps, err := strconv.Atoi(c.Query("pageSize", "50")); err == nil && ps > 0 {
+	if ps, err := strconv.Atoi(c.Query("pageSize", "100")); err == nil && ps > 0 {
 		pageSize = ps
 	}
 
@@ -233,13 +233,13 @@ func UserLikedPosts(c *fiber.Ctx) error {
 // Helper function to get pagination parameters
 func getPaginationParameters(c *fiber.Ctx) (int, int) {
 	page, _ := strconv.Atoi(c.Query("page", "1"))
-	pageSize, _ := strconv.Atoi(c.Query("pageSize", "50"))
+	pageSize, _ := strconv.Atoi(c.Query("pageSize", "100"))
 
 	if page < 1 {
 		page = 1
 	}
 	if pageSize < 1 || pageSize > 100 {
-		pageSize = 50
+		pageSize = 100
 	}
 
 	return page, pageSize
