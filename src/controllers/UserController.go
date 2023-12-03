@@ -57,10 +57,11 @@ func GetUser(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"id":         user.Id,
 		"name":       user.Name,
+		"email":       user.Email,
 		"bio":        user.Bio,
 		"location":   user.Location,
 		"website":    user.WebSite,
-		"birth_date": user.Bio,
+		"birth_date": user.BirthDate,
 		"icon":       user.Icon,
 		"banner":     user.Banner,
 	})
@@ -83,11 +84,11 @@ func UpdateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	// if len(data["email"]) < 1 || len(data["email"]) > 255 {
-	// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-	// 		"error": "メールアドレスは1文字以上255文字以下である必要があります。",
-	// 	})
-	// }
+	if len(data["email"]) < 1 || len(data["email"]) > 255 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "メールアドレスは1文字以上255文字以下である必要があります。",
+		})
+	}
 
 	if len(data["bio"]) > 1000 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -101,11 +102,11 @@ func UpdateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	// if len(data["birth_date"]) > 255 {
-	// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-	// 		"error": "生年月日は255文字以下である必要があります。",
-	// 	})
-	// }
+	if len(data["birth_date"]) > 255 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "生年月日は255文字以下である必要があります。",
+		})
+	}
 
 	// ミドルウェアを通じて現在のユーザーIDを取得
 	id, _ := middlewares.GetUserId(c)
@@ -123,17 +124,55 @@ func UpdateUser(c *fiber.Ctx) error {
 	// リクエストデータから更新対象のユーザーデータを一時変数に格納
 	updateData := map[string]interface{}{
 		"Name": data["name"],
-		// "Email":     data["email"],
+		"Email":     data["email"],
 		"Bio":      data["bio"],
 		"Icon":     data["icon"],
 		"Banner":   data["banner"],
 		"Location": data["location"],
 		"WebSite":  data["website"],
-		// "BirthDate": data["birth_date"],
+		"BirthDate": data["birth_date"],
 	}
 
 	// 一時変数のデータをユーザーデータに反映
 	database.DB.Model(&user).Updates(updateData)
+
+	// 更新されたユーザー情報をJSON形式でレスポンスとして返す
+	return c.JSON(user)
+}
+
+// UpdateEmail 関数は、ユーザー情報を更新するための関数です。
+func UpdateEmail(c *fiber.Ctx) error {
+	// リクエストボディからデータを読み込むための構造体を定義
+	var input struct {
+		Email string `json:"email"`
+	}
+
+	// リクエストボディの解析
+	if err := c.BodyParser(&input); err != nil {
+		return err
+	}
+
+	if len(input.Email) < 1 || len(input.Email) > 255 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "メールアドレスは1文字以上255文字以下である必要があります。",
+		})
+	}
+
+	// ミドルウェアを通じて現在のユーザーIDを取得
+	id, _ := middlewares.GetUserId(c)
+
+	// データベースからIDに基づいてユーザー情報を取得
+	var user models.User
+	if err := database.DB.Where("id = ?", id).First(&user).Error; err != nil {
+		// エラーがあれば、そのエラーを返す
+		return err
+	}
+
+	// 更新対象のユーザーデータを更新
+	user.Email = input.Email
+	if err := database.DB.Save(&user).Error; err != nil {
+		return err
+	}
 
 	// 更新されたユーザー情報をJSON形式でレスポンスとして返す
 	return c.JSON(user)
