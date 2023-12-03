@@ -134,13 +134,18 @@ func UpdateUser(c *fiber.Ctx) error {
 		"Name":      data["name"],
 		"Email":     data["email"],
 		"Bio":       data["bio"],
-		"Icon":      data["icon"],
-		"Banner":    data["banner"],
 		"Location":  data["location"],
 		"WebSite":   data["website"],
 		"BirthDate": data["birth_date"],
 	}
 
+	// Icon と Banner がリクエストに含まれている場合のみ、これらを更新データに含める
+	if icon, ok := data["icon"]; ok {
+		updateData["Icon"] = icon
+	}
+	if banner, ok := data["banner"]; ok {
+		updateData["Banner"] = banner
+	}
 	// 一時変数のデータをユーザーデータに反映
 	database.DB.Model(&user).Updates(updateData)
 
