@@ -9,8 +9,19 @@ import (
 )
 
 func GetAllUsers(c *fiber.Ctx) error {
+	// ページ番号とページサイズを取得
+	page, pageSize := getPaginationParameters(c)
+
 	var users []models.User
-	result := database.DB.Order("created_at DESC").Find(&users)
+	var total int64
+	database.DB.Model(&models.User{}).Count(&total)
+
+	result := database.DB.
+		Order("created_at DESC").
+		Limit(pageSize).
+		Offset((page - 1) * pageSize).
+		Find(&users)
+
 	if result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "ユーザー情報の取得に失敗しました",

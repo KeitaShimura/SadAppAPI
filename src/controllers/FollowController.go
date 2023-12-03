@@ -65,8 +65,23 @@ func GetFollowings(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "無効なユーザーID"})
 	}
 
+	// ページ番号とページサイズを取得
+	page, pageSize := getPaginationParameters(c)
+
 	var following []models.Follow
-	database.DB.Where("following_id = ?", userID).Order("created_at DESC").Find(&following)
+	var total int64
+	database.DB.Model(&models.Follow{}).Where("following_id = ?", userID).Count(&total)
+
+	result := database.DB.
+		Where("following_id = ?", userID).
+		Order("created_at DESC").
+		Limit(pageSize).
+		Offset((page - 1) * pageSize).
+		Find(&following)
+
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "フォロー情報の取得に失敗しました"})
+	}
 
 	return c.JSON(following)
 }
@@ -77,8 +92,23 @@ func GetFollowers(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "無効なユーザーID"})
 	}
 
+	// ページ番号とページサイズを取得
+	page, pageSize := getPaginationParameters(c)
+
 	var followers []models.Follow
-	database.DB.Where("follower_id = ?", userID).Order("created_at DESC").Find(&followers)
+	var total int64
+	database.DB.Model(&models.Follow{}).Where("follower_id = ?", userID).Count(&total)
+
+	result := database.DB.
+		Where("follower_id = ?", userID).
+		Order("created_at DESC").
+		Limit(pageSize).
+		Offset((page - 1) * pageSize).
+		Find(&followers)
+
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "フォロワー情報の取得に失敗しました"})
+	}
 
 	return c.JSON(followers)
 }
