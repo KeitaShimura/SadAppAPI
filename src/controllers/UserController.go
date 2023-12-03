@@ -57,7 +57,7 @@ func GetUser(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"id":         user.Id,
 		"name":       user.Name,
-		"email":       user.Email,
+		"email":      user.Email,
 		"bio":        user.Bio,
 		"location":   user.Location,
 		"website":    user.WebSite,
@@ -123,13 +123,13 @@ func UpdateUser(c *fiber.Ctx) error {
 
 	// リクエストデータから更新対象のユーザーデータを一時変数に格納
 	updateData := map[string]interface{}{
-		"Name": data["name"],
+		"Name":      data["name"],
 		"Email":     data["email"],
-		"Bio":      data["bio"],
-		"Icon":     data["icon"],
-		"Banner":   data["banner"],
-		"Location": data["location"],
-		"WebSite":  data["website"],
+		"Bio":       data["bio"],
+		"Icon":      data["icon"],
+		"Banner":    data["banner"],
+		"Location":  data["location"],
+		"WebSite":   data["website"],
 		"BirthDate": data["birth_date"],
 	}
 
