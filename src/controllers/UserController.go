@@ -111,13 +111,13 @@ func UpdateUser(c *fiber.Ctx) error {
 
 	// リクエストデータから更新対象のユーザーデータを一時変数に格納
 	updateData := map[string]interface{}{
-		"Name":      data["name"],
+		"Name": data["name"],
 		// "Email":     data["email"],
-		"Bio":       data["bio"],
-		"Icon":      data["icon"],
-		"Banner":    data["banner"],
-		"Location":  data["location"],
-		"WebSite":   data["website"],
+		"Bio":      data["bio"],
+		"Icon":     data["icon"],
+		"Banner":   data["banner"],
+		"Location": data["location"],
+		"WebSite":  data["website"],
 		// "BirthDate": data["birth_date"],
 	}
 
