@@ -98,6 +98,12 @@ func UpdateUser(c *fiber.Ctx) error {
 		})
 	}
 
+	if len(data["location"]) > 255 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "居住地のURは255文字以下である必要があります。",
+		})
+	}
+
 	if len(data["website"]) > 255 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "ウェブサイトのURLは255文字以下である必要があります。",
