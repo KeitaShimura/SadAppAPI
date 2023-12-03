@@ -72,11 +72,11 @@ func UpdateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	if len(data["email"]) < 1 || len(data["email"]) > 255 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "メールアドレスは1文字以上255文字以下である必要があります。",
-		})
-	}
+	// if len(data["email"]) < 1 || len(data["email"]) > 255 {
+	// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+	// 		"error": "メールアドレスは1文字以上255文字以下である必要があります。",
+	// 	})
+	// }
 
 	if len(data["bio"]) > 1000 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -90,11 +90,11 @@ func UpdateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	if len(data["birth_date"]) > 255 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "生年月日は255文字以下である必要があります。",
-		})
-	}
+	// if len(data["birth_date"]) > 255 {
+	// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+	// 		"error": "生年月日は255文字以下である必要があります。",
+	// 	})
+	// }
 
 	// ミドルウェアを通じて現在のユーザーIDを取得
 	id, _ := middlewares.GetUserId(c)
@@ -112,13 +112,13 @@ func UpdateUser(c *fiber.Ctx) error {
 	// リクエストデータから更新対象のユーザーデータを一時変数に格納
 	updateData := map[string]interface{}{
 		"Name":      data["name"],
-		"Email":     data["email"],
+		// "Email":     data["email"],
 		"Bio":       data["bio"],
 		"Icon":      data["icon"],
 		"Banner":    data["banner"],
 		"Location":  data["location"],
 		"WebSite":   data["website"],
-		"BirthDate": data["birth_date"],
+		// "BirthDate": data["birth_date"],
 	}
 
 	// 一時変数のデータをユーザーデータに反映
