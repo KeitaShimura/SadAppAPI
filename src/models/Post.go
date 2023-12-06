@@ -8,6 +8,7 @@ type Post struct {
 	UserId      uint          `json:"user_id" gorm:"column:user_id"`
 	User        User          `json:"user"`
 	Content     string        `json:"content"`
+	Image       string        `json:"image" gorm:"type:text;nullable"`
 	CreatedAt   time.Time     `json:"created_at"`
 	UpdatedAt   time.Time     `json:"updated_at" gorm:"nullable"`
 	PostComment []PostComment `json:"comments" gorm:"foreignKey:PostId"`
