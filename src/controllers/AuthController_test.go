@@ -5,6 +5,7 @@ import (
 	"SadApp/src/models"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"net/http/httptest"
 	"testing"
 
@@ -18,29 +19,33 @@ var mockDB *MockDB
 
 func init() {
 	mockDB = new(MockDB)
-	// 他の初期化処理（もしあれば）
 }
 
 func TestRegister(t *testing.T) {
 	// モックデータベースの設定
-	mockUser := &models.User{Name: "John Doe", Email: "johndoe@example.com", Password: []byte("password123")}
-	mockDB.On("CreateUser", mockUser).Return(nil)
+	mockDB.On("CreateUser", mock.Anything).Return(errors.New("データベースエラー"))
 
 	// リクエストとレスポンスの設定
 	app := fiber.New()
 	app.Post("/api/user/register", controllers.Register)
 
 	// テスト用データのエンコード
-	body, _ := json.Marshal(map[string]string{"name": "John Doe", "email": "johndoe@example.com", "password": "password123"})
+	body, _ := json.Marshal(map[string]string{
+		"name":             "John Doe",
+		"email":            "johndoe@example.com",
+		"password":         "password123",
+		"password_confirm": "password123",
+	})
 
 	// POSTリクエストの作成
 	req := httptest.NewRequest("POST", "/api/user/register", bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 
 	// リクエストの送信
-	resp, _ := app.Test(req)
+	resp, err := app.Test(req)
 
 	// アサーション
+	assert.Nil(t, err)
 	assert.Equal(t, fiber.StatusOK, resp.StatusCode)
 
 	// モックの期待値チェック
@@ -73,11 +78,14 @@ func TestLogin(t *testing.T) {
 	// 応答のボディを読み込むなど、追加のテストをここに記述
 }
 
+// 以下に MockDB と Database インターフェースを定義しています
+
 type Database interface {
 	CreateUser(user *models.User) error
 	GetUserByEmail(email string) (*models.User, error)
 	// 他の必要なメソッドをここに追加
 }
+
 type MockDB struct {
 	mock.Mock
 }
