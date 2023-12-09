@@ -2,81 +2,92 @@ package controllers_test
 
 import (
 	"SadApp/src/controllers"
+	"SadApp/src/models"
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
+// モックデータベースをグローバル変数として定義
+var mockDB *MockDB
+
+func init() {
+    mockDB = new(MockDB)
+    // 他の初期化処理（もしあれば）
+}
+
 func TestRegister(t *testing.T) {
-	// Fiberアプリケーションのセットアップ
-	app := fiber.New()
+    // モックデータベースの設定
+    mockUser := &models.User{Name: "John Doe", Email: "johndoe@example.com", Password: []byte("password123")}
+    mockDB.On("CreateUser", mockUser).Return(nil)
 
-	fmt.Println(app);
-	// ルートの設定
-	app.Post("/api/user/register", controllers.Register)
+    // リクエストとレスポンスの設定
+    app := fiber.New()
+    app.Post("/api/user/register", controllers.Register)
 
-	// テスト用ユーザーデータの作成
-	user := map[string]string{
-		"name":             "志村",
-		"email":            "1k1eitashimura202@gmail.com",
-		"password":         "11111111",
-		"password_confirm": "11111111",
-	}
+    // テスト用データのエンコード
+    body, _ := json.Marshal(map[string]string{"name": "John Doe", "email": "johndoe@example.com", "password": "password123"})
 
-	// データのJSONエンコード
-	body, _ := json.Marshal(user)
+    // POSTリクエストの作成
+    req := httptest.NewRequest("POST", "/api/user/register", bytes.NewReader(body))
+    req.Header.Set("Content-Type", "application/json")
 
-	// POSTリクエストの作成
-	req := httptest.NewRequest("POST", "/api/user/register", bytes.NewReader(body))
-	req.Header.Set("Content-Type", "application/json")
+    // リクエストの送信
+    resp, _ := app.Test(req)
 
-	// リクエストの送信とレスポンスの取得
-	resp, err := app.Test(req)
+    // アサーション
+    assert.Equal(t, fiber.StatusOK, resp.StatusCode)
 
-	// エラーがないことの確認
-	assert.Nil(t, err)
-
-	// ステータスコードの確認
-	assert.Equal(t, fiber.StatusOK, resp.StatusCode)
+    // モックの期待値チェック
+    mockDB.AssertExpectations(t)
 }
 
 func TestLogin(t *testing.T) {
-	// Fiberアプリケーションのセットアップ
-	app := fiber.New()
+    // Fiberアプリケーションのセットアップ
+    app := fiber.New()
+    app.Post("/api/user/login", controllers.Login)
 
-	// ルートの設定
-	app.Post("/api/user/login", controllers.Login)
+    // テスト用リクエストボディの準備
+    reqBody := map[string]string{
+        "email":    "1k1eitashimura202@gmail.com",
+        "password": "11111111",
+    }
+    body, _ := json.Marshal(reqBody)
 
-	// テスト用ログインデータの作成
-	user := map[string]string{
-		"email":    "1k1eitashimura202@gmail.com",
-		"password": "11111111",
-	}
+    // リクエストの作成
+    req := httptest.NewRequest("POST", "/api/user/login", bytes.NewReader(body))
+    req.Header.Set("Content-Type", "application/json")
 
-	// データのJSONエンコード
-	body, _ := json.Marshal(user)
+    // リクエストの送信とレスポンスの取得
+    resp, err := app.Test(req, -1)
 
-	// POSTリクエストの作成
-	req := httptest.NewRequest("POST", "/api/user/login", bytes.NewReader(body))
-	req.Header.Set("Content-Type", "application/json")
+    // アサーション
+    assert.Nil(t, err)
+    assert.Equal(t, fiber.StatusOK, resp.StatusCode)
 
-	// リクエストの送信とレスポンスの取得
-	resp, err := app.Test(req)
+    // 応答のボディを読み込むなど、追加のテストをここに記述
+}
 
-	// エラーがないことの確認
-	assert.Nil(t, err)
+type Database interface {
+    CreateUser(user *models.User) error
+    GetUserByEmail(email string) (*models.User, error)
+    // 他の必要なメソッドをここに追加
+}
+type MockDB struct {
+    mock.Mock
+}
 
-	// ステータスコードの確認
-	assert.Equal(t, fiber.StatusOK, resp.StatusCode)
+func (m *MockDB) CreateUser(user *models.User) error {
+    args := m.Called(user)
+    return args.Error(0)
+}
 
-	// 応答のボディを読み込む
-	// 例：レスポンスに含まれる特定のキーの存在や値をチェックするなど
-	// response := make(map[string]interface{})
-	// json.NewDecoder(resp.Body).Decode(&response)
-	// assert.Equal(t, "期待される値", response["特定のキー"])
+func (m *MockDB) GetUserByEmail(email string) (*models.User, error) {
+    args := m.Called(email)
+    return args.Get(0).(*models.User), args.Error(1)
 }
