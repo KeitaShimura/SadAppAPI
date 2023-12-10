@@ -1,4 +1,5 @@
 こちらは「COCOLOTalk」のバックエンドのリポジトリになります。フロントエンドのリポジトリは<a href="https://github.com/KeitaShimura/SadAppClient">こちら</a>です。
+[![言語バッジ](https://img.shields.io/badge/-Go-00ADD8.svg?logo=go&style=flat-square&logoColor=white)](https://golang.org/)
 
 
 https://dbdiagram.io/d/64600a51dca9fb07c40853cc
