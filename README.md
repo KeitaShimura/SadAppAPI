@@ -33,10 +33,13 @@
         </a>
     </p>
 
-<h2>サービスURL</h2>
-<p>
-    <a href="https://cocolo-talk.vercel.app" target="_blank">https://cocolo-talk.vercel.app</a>
+<h2>サービス概要</h2>
+<p>COCOLOTalkは「対人恐怖症、社交不安障害（SAD）の方のお悩みを解決したい！」という想いから作られた、無料のSNSです。</p>
+<p>自分と同じお悩みを持つ方に悩みを打ち明けることができます。</p>
 
+<h3>▼ サービスURL</h3>
+<p>
+<a href="https://cocolo-talk.vercel.app" target="_blank">https://cocolo-talk.vercel.app</a>
 <p>レスポンシブ対応済のため、PCでもスマートフォンでも快適にご利用いただけます。</p>
 </p>
 
