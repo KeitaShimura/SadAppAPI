@@ -46,7 +46,6 @@
   - コード解析: golangci-lint
   - フォーマッター: gofmt
   - テストパッケージ: testing
-
 - フロントエンド: JavaScript / React
   - コード解析: ESLint
   - フォーマッター: Prettier
