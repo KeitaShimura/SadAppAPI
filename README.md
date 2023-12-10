@@ -42,10 +42,12 @@
 <h2>メイン機能の使い方</h2>
 
 <h2>使用技術一覧</h2>
+
 - バックエンド: Go / Fiber
   - コード解析: golangci-lint
   - フォーマッター: gofmt
   - テストパッケージ: testing
+ 
 - フロントエンド: JavaScript / React
   - コード解析: ESLint
   - フォーマッター: Prettier
