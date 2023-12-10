@@ -56,7 +56,7 @@
 - CI / CD: GitHub Actions
 - 環境構築: Docker / Docker Compose
 - インフラ: GCP / Nginx / Vercel / Kubernetes
-- 
+
 <h2>使用機能一覧</h2>
     <ul>
         <li>ログイン</li>
