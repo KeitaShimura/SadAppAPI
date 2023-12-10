@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COCOLOTalk / 対人恐怖症の方ためのSNS</title>
-</head>
-<body>
     <h1>COCOLOTalk / 対人恐怖症の方ためのSNS</h1>
     <p>
         <a href="https://github.com/KeitaShimura/SadAppClient">フロントエンドのリポジトリはこちら</a>
@@ -90,6 +82,3 @@
     </ul>
 
     <h2>インフラ構成図</h2>
-    <!-- ここにインフラ構成図の説明を追加 -->
-</body>
-</html>
