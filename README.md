@@ -43,22 +43,21 @@
 
 <h2>使用技術一覧</h2>
     <p>
-        バックエンド: Go / Fiber
-        <ul>
-            <li>コード解析: golangci-lint</li>
-            <li>フォーマッター: gofmt</li>
-            <li>テストパッケージ: testing</li>
-        </ul>
-        フロントエンド: JavaScript / React
-        <ul>
-            <li>コード解析: ESLint</li>
-            <li>フォーマッター: Prettier</li>
-            <li>テストフレームワーク: React Testing Library / Jest</li>
-            <li>主要パッケージ: Axios / Font Awesome / React Paginate / React Bootstrap / React Toastify</li>
-        </ul>
-        CI / CD: GitHub Actions<br>
-        環境構築: Docker / Docker Compose<br>
-        インフラ: GCP / Nginx / Vercel / Kubernetes<br>
+- バックエンド: Go / Fiber
+  - コード解析: golangci-lint
+  - フォーマッター: gofmt
+  - テストパッケージ: testing
+
+- フロントエンド: JavaScript / React
+  - コード解析: ESLint
+  - フォーマッター: Prettier
+  - テストフレームワーク: React Testing Library / Jest
+  - 主要パッケージ: Axios / Font Awesome / React Paginate / React Bootstrap / React Toastify
+
+- CI / CD: GitHub Actions
+- 環境構築: Docker / Docker Compose
+- インフラ: GCP / Nginx / Vercel / Kubernetes
+
     </p>
 
 <h2>使用機能一覧</h2>
