@@ -42,7 +42,6 @@
 <h2>メイン機能の使い方</h2>
 
 <h2>使用技術一覧</h2>
-    <p>
 - バックエンド: Go / Fiber
   - コード解析: golangci-lint
   - フォーマッター: gofmt
@@ -57,9 +56,7 @@
 - CI / CD: GitHub Actions
 - 環境構築: Docker / Docker Compose
 - インフラ: GCP / Nginx / Vercel / Kubernetes
-
-    </p>
-
+- 
 <h2>使用機能一覧</h2>
     <ul>
         <li>ログイン</li>
