@@ -1,12 +1,12 @@
-    <h1>COCOLOTalk / 対人恐怖症の方ためのSNS</h1>
+<h1>COCOLOTalk / 対人恐怖症の方ためのSNS</h1>
     <p>
         <a href="https://github.com/KeitaShimura/SadAppClient">フロントエンドのリポジトリはこちら</a>
     </p>
     <img width="1800" alt="スクリーンショット 2023-12-08 2 56 59" src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/b159463e-247d-4f25-8bc5-84562412837d">
     <img width="1800" alt="スクリーンショット 2023-12-08 2 56 44" src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/d96ebfca-0aef-4fb7-ad7b-1da56136f167">
 
-    <h2>技術スタック</h2>
-    <p>
+<h2>技術スタック</h2>
+<p>
         <a href="https://golang.org/">
             <img src="https://img.shields.io/badge/-Go-00ADD8.svg?logo=go&style=flat-square&logoColor=white" alt="Go Badge">
         </a>
@@ -33,16 +33,16 @@
         </a>
     </p>
 
-    <h2>サービスURL</h2>
+<h2>サービスURL</h2>
     <p>
         <a href="https://cocolo-talk.vercel.app">https://cocolo-talk.vercel.app</a>
         レスポンシブ対応済のため、PCでもスマートフォンでも快適にご利用いただけます。
     </p>
 
-    <h2>メイン機能の使い方</h2>
+<h2>メイン機能の使い方</h2>
     <!-- ここにメイン機能の説明を追加 -->
 
-    <h2>使用技術一覧</h2>
+<h2>使用技術一覧</h2>
     <p>
         バックエンド: Go / Fiber
         <ul>
@@ -62,7 +62,7 @@
         インフラ: GCP / Nginx / Vercel / Kubernetes
     </p>
 
-    <h2>使用機能一覧</h2>
+<h2>使用機能一覧</h2>
     <ul>
         <li>ログイン</li>
         <li>新規登録</li>
@@ -73,7 +73,7 @@
         <li>プロフィール、プロフィール編集</li>
     </ul>
 
-    <h2>画面</h2>
+<h2>画面</h2>
     <ul>
         <li>トースト表示</li>
         <li>モーダル画面(各画面の詳細は下記の画面遷移図参照)</li>
@@ -81,4 +81,4 @@
         <li>レスポンシブデザイン</li>
     </ul>
 
-    <h2>インフラ構成図</h2>
+<h2>インフラ構成図</h2>
