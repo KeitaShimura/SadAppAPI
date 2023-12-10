@@ -78,4 +78,9 @@
         <li>レスポンシブデザイン</li>
     </ul>
 
+<h2>ER図</h2>
+
+
 <h2>インフラ構成図</h2>
+<img width="888" alt="スクリーンショット 2023-12-11 2 53 06" src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/5240faf4-c484-4969-af10-01ad3fe44d48">
+
