@@ -34,11 +34,11 @@
     </p>
 
 <h2>サービスURL</h2>
-    <p>
-        ="https://cocolo-talk.vercel.app" target="_blank">https://cocolo-talk.vercel.app</a>
+<p>
+    <a href="https://cocolo-talk.vercel.app" target="_blank">https://cocolo-talk.vercel.app</a>
 
-        <p>レスポンシブ対応済のため、PCでもスマートフォンでも快適にご利用いただけます。</p>
-    </p>
+<p>レスポンシブ対応済のため、PCでもスマートフォンでも快適にご利用いただけます。</p>
+</p>
 
 <h2>メイン機能の使い方</h2>
 
