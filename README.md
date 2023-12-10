@@ -80,7 +80,7 @@
     </ul>
 
 <h2>ER図</h2>
-<img width="888" alt="スクリーンショット 2023-12-11 2 53 06" src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/5240faf4-c484-4969-af10-01ad3fe44d48" />
-<a hrer="https://dbdiagram.io/d/64600a51dca9fb07c40853cc" target="_blank">ER図</a>
+<img width="888" alt="スクリーンショット 2023-12-11 2 53 06" src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/5240faf4-c484-4969-af10-01ad3fe44d48" /></br>
+<a href="https://dbdiagram.io/d/64600a51dca9fb07c40853cc" target="_blank">ER図</a>
 <h2>インフラ構成図</h2>
 
