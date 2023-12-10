@@ -9,7 +9,7 @@
 [![Test Badge](https://img.shields.io/badge/-Test-00BFFF.svg?logo=testinglibrary&style=flat-square&logoColor=white)](https://example.com/)
 
 ▼ サービスURL
-<a href="[https://github.com/KeitaShimura/SadAppClient](https://cocolo-talk.vercel.app/)https://cocolo-talk.vercel.app/">こちら</a>
+<a>https://cocolo-talk.vercel.app/</>
 レスポンシブ対応済のため、PCでもスマートフォンでも快適にご利用いただけます。
 
 ▼ メイン機能の使い方
