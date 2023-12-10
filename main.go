@@ -3,9 +3,10 @@ package main
 import (
 	"SadApp/src/database"
 	"SadApp/src/routes"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"log"
 )
 
 func main() {
@@ -28,5 +29,10 @@ func main() {
 
 	// サーバーをポート8002で起動します。
 	// 何らかのエラーが発生した場合は、ログに記録してプログラムを終了します。
-	log.Fatal(app.Listen(":8080"))
+	port := database.Port
+	if port == "" {
+		port = "8080" // デフォルトポート
+	}
+	log.Fatal(app.Listen(":" + port))
+
 }

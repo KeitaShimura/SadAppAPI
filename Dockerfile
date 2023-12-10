@@ -4,9 +4,10 @@ WORKDIR /app
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
-
 COPY . .
 
-RUN curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
+ENV GOOS=linux GOARCH=amd64
+RUN go build -o main ./main.go
 
-CMD ["air"]
+EXPOSE 8080
+CMD ["/app/main"]
