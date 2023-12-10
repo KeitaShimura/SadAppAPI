@@ -9,5 +9,5 @@ var (
 	DBPort       = os.Getenv("DB_PORT")       // データベースサーバーのポート
 	DBName       = os.Getenv("DB_NAME")       // データベース名
 	DBParameters = os.Getenv("DB_PARAMETERS") // データベース接続パラメーター
-	Port         = os.Getenv("PORT") // データベース接続パラメーター
+	Port         = os.Getenv("PORT")          // データベース接続パラメーター
 )
