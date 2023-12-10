@@ -1,6 +1,6 @@
 <h1>COCOLOTalk / 対人恐怖症の方ためのSNS</h1>
     <p>
-        フロントエンドのリポジトリは<a href="https://github.com/KeitaShimura/SadAppClient target="_blank">こちら</a>
+        フロントエンドのリポジトリは<a href="https://github.com/KeitaShimura/SadAppClient" target="_blank">こちら</a>
     </p>
     <img width="1800" alt="スクリーンショット 2023-12-08 2 56 59" src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/b159463e-247d-4f25-8bc5-84562412837d">
     <img width="1800" alt="スクリーンショット 2023-12-08 2 56 44" src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/d96ebfca-0aef-4fb7-ad7b-1da56136f167">
