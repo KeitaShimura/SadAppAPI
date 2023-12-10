@@ -1,41 +1,42 @@
 <h1>COCOLOTalk / 対人恐怖症の方ためのSNS</h1>
     <p>
-        フロントエンドのリポジトリは<a href="https://github.com/KeitaShimura/SadAppClient">こちら</a>
+        フロントエンドのリポジトリは<a href="https://github.com/KeitaShimura/SadAppClient target="_blank">こちら</a>
     </p>
     <img width="1800" alt="スクリーンショット 2023-12-08 2 56 59" src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/b159463e-247d-4f25-8bc5-84562412837d">
     <img width="1800" alt="スクリーンショット 2023-12-08 2 56 44" src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/d96ebfca-0aef-4fb7-ad7b-1da56136f167">
 
 <h2>技術スタック</h2>
 <p>
-        <a href="https://golang.org/">
+        <a href="https://golang.org/" target="_blank">
             <img src="https://img.shields.io/badge/-Go-00ADD8.svg?logo=go&style=flat-square&logoColor=white" alt="Go Badge">
         </a>
-        <a href="https://gofiber.io/">
+        <a href="https://gofiber.io/" target="_blank">
             <img src="https://img.shields.io/badge/-Go_Fiber-88C0D0.svg?logo=gofiber&style=flat-square&logoColor=white" alt="Go-Fiber Badge">
         </a>
-        <a href="https://reactjs.org/">
+        <a href="https://reactjs.org/" target="_blank">
             <img src="https://img.shields.io/badge/-React-61DAFB.svg?logo=react&style=flat-square&logoColor=white" alt="React Badge">
         </a>
         <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">
             <img src="https://img.shields.io/badge/-JavaScript-F7DF1E.svg?logo=javascript&style=flat-square&logoColor=black" alt="JavaScript Badge">
         </a>
-        <a href="https://www.docker.com/">
+        <a href="https://www.docker.com/" target="_blank">
             <img src="https://img.shields.io/badge/-Docker-2496ED.svg?logo=docker&style=flat-square&logoColor=white" alt="Docker Badge">
         </a>
-        <a href="https://cloud.google.com/">
+        <a href="https://cloud.google.com/" target="_blank">
             <img src="https://img.shields.io/badge/-Google_Cloud-4285F4.svg?logo=google-cloud&style=flat-square&logoColor=white" alt="GCP Badge">
         </a>
-        <a href="https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment">
+        <a href="https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment" target="_blank">
             <img src="https://img.shields.io/badge/-CI%2FCD-2088FF.svg?style=flat-square" alt="CI/CD Badge">
         </a>
-        <a href="https://example.com/">
+        <a href="https://example.com/" target="_blank">
             <img src="https://img.shields.io/badge/-Test-00BFFF.svg?logo=testinglibrary&style=flat-square&logoColor=white" alt="Test Badge">
         </a>
     </p>
 
 <h2>サービスURL</h2>
     <p>
-        <a href="https://cocolo-talk.vercel.app">https://cocolo-talk.vercel.app</a>
+        ="https://cocolo-talk.vercel.app" target="_blank">https://cocolo-talk.vercel.app</a>
+
         <p>レスポンシブ対応済のため、PCでもスマートフォンでも快適にご利用いただけます。</p>
     </p>
 
@@ -80,6 +81,6 @@
 
 <h2>ER図</h2>
 <img width="888" alt="スクリーンショット 2023-12-11 2 53 06" src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/5240faf4-c484-4969-af10-01ad3fe44d48">
-
+<a hrer="https://dbdiagram.io/d/64600a51dca9fb07c40853cc" target="_blank">ER図</a>
 <h2>インフラ構成図</h2>
 
