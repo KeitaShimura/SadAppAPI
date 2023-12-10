@@ -73,6 +73,7 @@ func GetFollowings(c *fiber.Ctx) error {
 	database.DB.Model(&models.Follow{}).Where("following_id = ?", userID).Count(&total)
 
 	result := database.DB.
+		Preload("Follower").
 		Where("following_id = ?", userID).
 		Order("created_at DESC").
 		Limit(pageSize).
@@ -100,6 +101,7 @@ func GetFollowers(c *fiber.Ctx) error {
 	database.DB.Model(&models.Follow{}).Where("follower_id = ?", userID).Count(&total)
 
 	result := database.DB.
+		Preload("Following").
 		Where("follower_id = ?", userID).
 		Order("created_at DESC").
 		Limit(pageSize).
