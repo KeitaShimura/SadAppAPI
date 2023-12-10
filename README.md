@@ -56,9 +56,9 @@
             <li>テストフレームワーク: React Testing Library / Jest</li>
             <li>主要パッケージ: Axios / Font Awesome / React Paginate / React Bootstrap / React Toastify</li>
         </ul>
-        CI / CD: GitHub Actions
-        環境構築: Docker / Docker Compose
-        インフラ: GCP / Nginx / Vercel / Kubernetes
+        CI / CD: GitHub Actions<br>
+        環境構築: Docker / Docker Compose<br>
+        インフラ: GCP / Nginx / Vercel / Kubernetes<br>
     </p>
 
 <h2>使用機能一覧</h2>
