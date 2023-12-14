@@ -79,11 +79,8 @@ func TestRegister(t *testing.T) {
 	if err != nil {
 		// エラー処理
 		log.Printf("app.Test failed: %v", err)
-		// その他のエラー処理...
-		return // または適切なエラー処理を行う
+		return
 	}
-
-	// result を使用した処理...
 
 	// ステータスコードの検証
 	assert.Equal(t, http.StatusOK, res.Code) // 期待されるステータスコードを設定
