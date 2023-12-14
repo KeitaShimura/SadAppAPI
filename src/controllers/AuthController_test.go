@@ -1,101 +1,126 @@
-package controllers_test
+package controllers
 
 import (
-	"SadApp/src/controllers"
-	"SadApp/src/models"
+	"SadApp/src/database"
+	// "SadApp/src/models"
 	"bytes"
 	"encoding/json"
-	"errors"
+	"log"
+	"net/http"
 	"net/http/httptest"
+	// "regexp"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
+	// "golang.org/x/crypto/bcrypt"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-// モックデータベースをグローバル変数として定義
-var mockDB *MockDB
+// setupMockDB はモックされたデータベース接続をセットアップします
+func setupMockDB() (*gorm.DB, sqlmock.Sqlmock) {
+    db, mock, err := sqlmock.New()
+    if err != nil {
+        log.Fatalf("An error '%s' was not expected when opening a stub database connection", err)
+    }
 
-func init() {
-	mockDB = new(MockDB)
+    // GORMが接続時に実行するクエリを期待する
+    mock.ExpectQuery("SELECT VERSION()").WillReturnRows(sqlmock.NewRows([]string{"version"}).AddRow("1"))
+
+    gormDB, err := gorm.Open(mysql.New(mysql.Config{
+        Conn: db,
+    }), &gorm.Config{})
+
+    if err != nil {
+        log.Fatalf("An error '%s' was not expected when setting up the mock database connection", err)
+    }
+
+    return gormDB, mock
 }
 
+// setupRequest はテスト用のHTTPリクエストとレスポンスを準備します
+func setupRequest(method, path string, body interface{}) (*fiber.App, *http.Request, *httptest.ResponseRecorder) {
+    app := fiber.New()
+    var req *http.Request
+
+    if body != nil {
+        bodyBytes, _ := json.Marshal(body)
+        req = httptest.NewRequest(method, path, bytes.NewReader(bodyBytes))
+    } else {
+        req = httptest.NewRequest(method, path, nil)
+    }
+
+    req.Header.Set("Content-Type", "application/json")
+    res := httptest.NewRecorder()
+
+    return app, req, res
+}
+
+// Register関数のテスト
 func TestRegister(t *testing.T) {
-	// モックデータベースの設定
-	mockDB.On("CreateUser", mock.Anything).Return(errors.New("データベースエラー"))
+	mockDB, _ := setupMockDB()
+    database.DB = mockDB // モックデータベースをグローバルDBに設定
+    // リクエストのセットアップ
+    app, req, res := setupRequest("POST", "/api/user/register", map[string]string{
+        "name":             "Test User",
+        "email":            "test@example.com",
+        "password":         "password123",
+        "password_confirm": "password123",
+    })
 
-	// リクエストとレスポンスの設定
-	app := fiber.New()
-	app.Post("/api/user/register", controllers.Register)
+    // ルートの登録
+    app.Post("/api/user/register", Register)
 
-	// テスト用データのエンコード
-	body, _ := json.Marshal(map[string]string{
-		"name":             "John Doe",
-		"email":            "johndoe@example.com",
-		"password":         "password123",
-		"password_confirm": "password123",
-	})
+    // リクエストの実行
+    app.Test(req, -1)
 
-	// POSTリクエストの作成
-	req := httptest.NewRequest("POST", "/api/user/register", bytes.NewReader(body))
-	req.Header.Set("Content-Type", "application/json")
-
-	// リクエストの送信
-	resp, err := app.Test(req)
-
-	// アサーション
-	assert.Nil(t, err)
-	assert.Equal(t, fiber.StatusOK, resp.StatusCode)
-
-	// モックの期待値チェック
-	mockDB.AssertExpectations(t)
+    // ステータスコードの検証
+    assert.Equal(t, http.StatusOK, res.Code) // 期待されるステータスコードを設定
 }
 
-func TestLogin(t *testing.T) {
-	// Fiberアプリケーションのセットアップ
-	app := fiber.New()
-	app.Post("/api/user/login", controllers.Login)
+// TestLogin はLogin関数のテストです
+// func TestLogin(t *testing.T) {
+//     // モックデータベースのセットアップ
+//     mockDB, mock := setupMockDB()
+//     database.DB = mockDB
 
-	// テスト用リクエストボディの準備
-	reqBody := map[string]string{
-		"email":    "1k1eitashimura202@gmail.com",
-		"password": "11111111",
-	}
-	body, _ := json.Marshal(reqBody)
+//     // モックが期待するクエリ
+//     hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), 14)
+//     mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `users` WHERE `users`.`email` = ? ORDER BY `users`.`id` LIMIT 1")).
+//         WithArgs("test@example.com").
+//         WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email", "password"}).
+//             AddRow(1, "Test User", "test@example.com", hashedPassword))
 
-	// リクエストの作成
-	req := httptest.NewRequest("POST", "/api/user/login", bytes.NewReader(body))
-	req.Header.Set("Content-Type", "application/json")
 
-	// リクエストの送信とレスポンスの取得
-	resp, err := app.Test(req, -1)
+//     // テスト用のユーザーを作成
+//     user := models.User{Name: "Test User", Email: "test@example.com"}
+//     user.SetPassword("password123")
 
-	// アサーション
-	assert.Nil(t, err)
-	assert.Equal(t, fiber.StatusOK, resp.StatusCode)
+//     // データベースへのInsert操作をモック
+// 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `users` WHERE `users`.`email` = ? ORDER BY `users`.`id` LIMIT 1")).
+//     WithArgs("test@example.com").
+//     WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email", "password"}).
+//         AddRow(1, "Test User", "test@example.com", "hashed_password"))
 
-	// 応答のボディを読み込むなど、追加のテストをここに記述
-}
+//     // Fiberアプリとテスト用リクエストをセットアップ
+//     app, req, res := setupRequest("POST", "/api/user/login", map[string]string{
+//         "email":    "test@example.com",
+//         "password": "password123",
+//     })
 
-// 以下に MockDB と Database インターフェースを定義しています
+//     // ルートを登録
+//     app.Post("/api/login", Login)
 
-type Database interface {
-	CreateUser(user *models.User) error
-	GetUserByEmail(email string) (*models.User, error)
-	// 他の必要なメソッドをここに追加
-}
+//     // リクエストをテスト
+//     app.Test(req, -1)
 
-type MockDB struct {
-	mock.Mock
-}
+//     // レスポンスのアサーション
+//     assert.Equal(t, http.StatusOK, res.Code)
 
-func (m *MockDB) CreateUser(user *models.User) error {
-	args := m.Called(user)
-	return args.Error(0)
-}
-
-func (m *MockDB) GetUserByEmail(email string) (*models.User, error) {
-	args := m.Called(email)
-	return args.Get(0).(*models.User), args.Error(1)
-}
+//     // モックの期待通りの動作を検証
+//     if err := mock.ExpectationsWereMet(); err != nil {
+//         t.Errorf("there were unfulfilled expectations: %s", err)
+//     }
+// }

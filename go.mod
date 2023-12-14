@@ -3,6 +3,7 @@ module SadApp
 go 1.20
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.1 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect

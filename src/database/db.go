@@ -16,7 +16,27 @@ var DB *gorm.DB
 // Connect はデータベースへの接続を確立する関数です。
 func Connect() {
 	var err error
-	// dsn（データソース名）を組み立てます。これには接続情報が含まれます。
+	// 環境変数が設定されていない場合、デフォルトの情報を使用
+	if DBUsername == "" {
+		DBUsername = "root"
+	}
+	if DBPassword == "" {
+		DBPassword = "@Keita8001"
+	}
+	if DBHost == "" {
+		DBHost = "127.0.0.1"
+	}
+	if DBPort == "" {
+		DBPort = "3306"
+	}
+	if DBName == "" {
+		DBName = "sadapp"
+	}
+	if DBParameters == "" {
+		DBParameters = "charset=utf8mb4&parseTime=True&loc=Local"
+	}
+
+	// dsn（データソース名）を組み立てます。
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?%s", DBUsername, DBPassword, DBHost, DBPort, DBName, DBParameters)
 
 	// データベースに接続を開きます。
@@ -40,3 +60,10 @@ func AutoMigrate() {
 		log.Fatalf("データベースのマイグレーションに失敗しました: %v", err)
 	}
 }
+
+type Database interface {
+	CreateUser(user *models.User) error
+	GetUserByEmail(email string) (*models.User, error)
+	// 他の必要なメソッドをここに追加
+}
+
