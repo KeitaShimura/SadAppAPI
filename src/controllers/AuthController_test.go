@@ -2,19 +2,18 @@ package controllers
 
 import (
 	"SadApp/src/database"
-	// "SadApp/src/models"
 	"bytes"
 	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
 
-	// "regexp"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/bcrypt"
 
 	// "golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/mysql"
@@ -67,7 +66,7 @@ func TestRegister(t *testing.T) {
 	// リクエストのセットアップ
 	app, req, res := setupRequest("POST", "/api/user/register", map[string]string{
 		"name":             "Test User",
-		"email":            "test@example.com",
+		"emails":           "test@example.com",
 		"password":         "password123",
 		"password_confirm": "password123",
 	})
@@ -90,46 +89,38 @@ func TestRegister(t *testing.T) {
 	assert.Equal(t, http.StatusOK, res.Code) // 期待されるステータスコードを設定
 }
 
-// TestLogin はLogin関数のテストです
-// func TestLogin(t *testing.T) {
-//     // モックデータベースのセットアップ
-//     mockDB, mock := setupMockDB()
-//     database.DB = mockDB
+// TestLogin 関数は、Login 関数のテストを行います。
+func TestLogin(t *testing.T) {
+	// モックデータベースのセットアップ
+	mockDB, mock := setupMockDB()
+	database.DB = mockDB
 
-//     // モックが期待するクエリ
-//     hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), 14)
-//     mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `users` WHERE `users`.`email` = ? ORDER BY `users`.`id` LIMIT 1")).
-//         WithArgs("test@example.com").
-//         WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email", "password"}).
-//             AddRow(1, "Test User", "test@example.com", hashedPassword))
+	// モックデータベースに存在するユーザー情報を設定
+	mockedEmail := "keitashimura2023@gmail.com"
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("11111111"), 12)
+	mock.ExpectQuery("SELECT * FROM `users` WHERE email = ? ORDER BY `id` LIMIT 1").
+		WithArgs(mockedEmail).
+		WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email", "password"}).
+			AddRow(1, "テスト1", mockedEmail, hashedPassword))
 
-//     // テスト用のユーザーを作成
-//     user := models.User{Name: "Test User", Email: "test@example.com"}
-//     user.SetPassword("password123")
+	// テスト用のリクエストデータ
+	requestData := map[string]string{
+		"email":    mockedEmail,
+		"password": "11111111",
+	}
 
-//     // データベースへのInsert操作をモック
-// 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `users` WHERE `users`.`email` = ? ORDER BY `users`.`id` LIMIT 1")).
-//     WithArgs("test@example.com").
-//     WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email", "password"}).
-//         AddRow(1, "Test User", "test@example.com", "hashed_password"))
+	// Fiber アプリとテスト用リクエストをセットアップ
+	app, req, res := setupRequest("POST", "/api/user/login", requestData)
 
-//     // Fiberアプリとテスト用リクエストをセットアップ
-//     app, req, res := setupRequest("POST", "/api/user/login", map[string]string{
-//         "email":    "test@example.com",
-//         "password": "password123",
-//     })
+	// ルートを登録
+	app.Post("/api/user/login", Login)
 
-//     // ルートを登録
-//     app.Post("/api/login", Login)
+	// リクエストをテスト
+	_, err := app.Test(req, -1)
+	if err != nil {
+		t.Fatalf("app.Test failed: %v", err)
+	}
 
-//     // リクエストをテスト
-//     app.Test(req, -1)
-
-//     // レスポンスのアサーション
-//     assert.Equal(t, http.StatusOK, res.Code)
-
-//     // モックの期待通りの動作を検証
-//     if err := mock.ExpectationsWereMet(); err != nil {
-//         t.Errorf("there were unfulfilled expectations: %s", err)
-//     }
-// }
+	// ステータスコードの検証
+	assert.Equal(t, http.StatusOK, res.Code)
+}
