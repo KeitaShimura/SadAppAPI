@@ -66,4 +66,3 @@ type Database interface {
 	GetUserByEmail(email string) (*models.User, error)
 	// 他の必要なメソッドをここに追加
 }
-

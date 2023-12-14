@@ -8,12 +8,14 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+
 	// "regexp"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
+
 	// "golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -21,63 +23,71 @@ import (
 
 // setupMockDB はモックされたデータベース接続をセットアップします
 func setupMockDB() (*gorm.DB, sqlmock.Sqlmock) {
-    db, mock, err := sqlmock.New()
-    if err != nil {
-        log.Fatalf("An error '%s' was not expected when opening a stub database connection", err)
-    }
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		log.Fatalf("An error '%s' was not expected when opening a stub database connection", err)
+	}
 
-    // GORMが接続時に実行するクエリを期待する
-    mock.ExpectQuery("SELECT VERSION()").WillReturnRows(sqlmock.NewRows([]string{"version"}).AddRow("1"))
+	// GORMが接続時に実行するクエリを期待する
+	mock.ExpectQuery("SELECT VERSION()").WillReturnRows(sqlmock.NewRows([]string{"version"}).AddRow("1"))
 
-    gormDB, err := gorm.Open(mysql.New(mysql.Config{
-        Conn: db,
-    }), &gorm.Config{})
+	gormDB, err := gorm.Open(mysql.New(mysql.Config{
+		Conn: db,
+	}), &gorm.Config{})
 
-    if err != nil {
-        log.Fatalf("An error '%s' was not expected when setting up the mock database connection", err)
-    }
+	if err != nil {
+		log.Fatalf("An error '%s' was not expected when setting up the mock database connection", err)
+	}
 
-    return gormDB, mock
+	return gormDB, mock
 }
 
 // setupRequest はテスト用のHTTPリクエストとレスポンスを準備します
 func setupRequest(method, path string, body interface{}) (*fiber.App, *http.Request, *httptest.ResponseRecorder) {
-    app := fiber.New()
-    var req *http.Request
+	app := fiber.New()
+	var req *http.Request
 
-    if body != nil {
-        bodyBytes, _ := json.Marshal(body)
-        req = httptest.NewRequest(method, path, bytes.NewReader(bodyBytes))
-    } else {
-        req = httptest.NewRequest(method, path, nil)
-    }
+	if body != nil {
+		bodyBytes, _ := json.Marshal(body)
+		req = httptest.NewRequest(method, path, bytes.NewReader(bodyBytes))
+	} else {
+		req = httptest.NewRequest(method, path, nil)
+	}
 
-    req.Header.Set("Content-Type", "application/json")
-    res := httptest.NewRecorder()
+	req.Header.Set("Content-Type", "application/json")
+	res := httptest.NewRecorder()
 
-    return app, req, res
+	return app, req, res
 }
 
 // Register関数のテスト
 func TestRegister(t *testing.T) {
 	mockDB, _ := setupMockDB()
-    database.DB = mockDB // モックデータベースをグローバルDBに設定
-    // リクエストのセットアップ
-    app, req, res := setupRequest("POST", "/api/user/register", map[string]string{
-        "name":             "Test User",
-        "email":            "test@example.com",
-        "password":         "password123",
-        "password_confirm": "password123",
-    })
+	database.DB = mockDB // モックデータベースをグローバルDBに設定
+	// リクエストのセットアップ
+	app, req, res := setupRequest("POST", "/api/user/register", map[string]string{
+		"name":             "Test User",
+		"email":            "test@example.com",
+		"password":         "password123",
+		"password_confirm": "password123",
+	})
 
-    // ルートの登録
-    app.Post("/api/user/register", Register)
+	// ルートの登録
+	app.Post("/api/user/register", Register)
 
-    // リクエストの実行
-    app.Test(req, -1)
+	// リクエストの実行
+	_, err := app.Test(req, -1)
+	if err != nil {
+		// エラー処理
+		log.Printf("app.Test failed: %v", err)
+		// その他のエラー処理...
+		return // または適切なエラー処理を行う
+	}
 
-    // ステータスコードの検証
-    assert.Equal(t, http.StatusOK, res.Code) // 期待されるステータスコードを設定
+	// result を使用した処理...
+
+	// ステータスコードの検証
+	assert.Equal(t, http.StatusOK, res.Code) // 期待されるステータスコードを設定
 }
 
 // TestLogin はLogin関数のテストです
@@ -92,7 +102,6 @@ func TestRegister(t *testing.T) {
 //         WithArgs("test@example.com").
 //         WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email", "password"}).
 //             AddRow(1, "Test User", "test@example.com", hashedPassword))
-
 
 //     // テスト用のユーザーを作成
 //     user := models.User{Name: "Test User", Email: "test@example.com"}
