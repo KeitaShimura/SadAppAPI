@@ -33,6 +33,6 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
         with:
-          version: v1.52.2
+          version: v1.54.1
           args: --timeout 5m
           fix: true
