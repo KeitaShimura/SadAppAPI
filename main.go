@@ -31,7 +31,7 @@ func main() {
 	// 何らかのエラーが発生した場合は、ログに記録してプログラムを終了します。
 	port := database.Port
 	if port == "" {
-		port = "8003" // デフォルトポート
+		port = "8080" // デフォルトポート
 	}
 	log.Fatal(app.Listen(":" + port))
 
