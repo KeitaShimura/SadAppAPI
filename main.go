@@ -20,7 +20,7 @@ func main() {
 
 	app.Use(cors.New(cors.Config{
 		AllowCredentials: true,
-		AllowOrigins:     "http://localhost:3000", // フロントエンドのオリジンを具体的に指定
+		AllowOrigins:     "http://localhost:3000, https://cocolo-talk.vercel.app/", // フロントエンドのオリジンを具体的に指定
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 	}))
 
@@ -31,7 +31,7 @@ func main() {
 	// 何らかのエラーが発生した場合は、ログに記録してプログラムを終了します。
 	port := database.Port
 	if port == "" {
-		port = "8080" // デフォルトポート
+		port = "8003" // デフォルトポート
 	}
 	log.Fatal(app.Listen(":" + port))
 
