@@ -4,10 +4,13 @@ WORKDIR /app
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
+
 COPY . .
 
-ENV GOOS=linux GOARCH=amd64
-RUN go build -o main ./main.go
+RUN go build -o /build
+
+ENV HOSTNAME "0.0.0.0"
 
 EXPOSE 8080
-CMD ["/app/main"]
+
+CMD ["/build"]

@@ -18,13 +18,13 @@ func Connect() {
 	var err error
 	// 環境変数が設定されていない場合、デフォルトの情報を使用
 	if DBUsername == "" {
-		DBUsername = "root"
+		DBUsername = "keita"
 	}
 	if DBPassword == "" {
 		DBPassword = "@Keita8001"
 	}
 	if DBHost == "" {
-		DBHost = "127.0.0.1"
+		DBHost = "localhost"
 	}
 	if DBPort == "" {
 		DBPort = "3306"
@@ -59,10 +59,4 @@ func AutoMigrate() {
 		// マイグレーションに失敗した場合、エラーをログに記録し、プログラムを終了します。
 		log.Fatalf("データベースのマイグレーションに失敗しました: %v", err)
 	}
-}
-
-type Database interface {
-	CreateUser(user *models.User) error
-	GetUserByEmail(email string) (*models.User, error)
-	// 他の必要なメソッドをここに追加
 }
