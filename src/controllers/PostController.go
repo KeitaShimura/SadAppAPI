@@ -54,16 +54,6 @@ func Posts(c *fiber.Ctx) error {
     return c.JSON(posts)
 }
 
-
-// 画像のフルURLを生成するヘルパー関数
-func generateImageUrl(imagePath string) string {
-	if imagePath == "" {
-		return "" // 必要に応じてデフォルトの画像URLを返す
-	}
-	// 画像が静的ディレクトリから提供されると仮定
-	return "/src/uploads" + imagePath
-}
-
 func UserPosts(c *fiber.Ctx) error {
 	userID, err := c.ParamsInt("id")
 	if err != nil {
