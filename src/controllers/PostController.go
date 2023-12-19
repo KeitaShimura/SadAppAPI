@@ -4,6 +4,7 @@ import (
 	"SadApp/src/database"
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -114,6 +115,23 @@ func CreatePost(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "不正なリクエストです。",
 		})
+	}
+
+	// 画像ファイルの取得
+	file, err := c.FormFile("image")
+	if err == nil {
+		// 画像の保存先パスを生成
+		imagePath := filepath.Join("src/uploads", file.Filename)
+
+		// 画像をサーバー上に保存
+		if err := c.SaveFile(file, imagePath); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "画像の保存に失敗しました。",
+			})
+		}
+
+		// 画像のURLを生成し、Postに割り当てます
+		post.Image = "postImage" + imagePath
 	}
 
 	content := strings.TrimSpace(post.Content)
