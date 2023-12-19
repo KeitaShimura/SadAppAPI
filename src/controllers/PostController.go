@@ -160,7 +160,6 @@ func CreatePost(c *fiber.Ctx) error {
     return c.JSON(post)
 }
 
-
 func UpdatePost(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
 

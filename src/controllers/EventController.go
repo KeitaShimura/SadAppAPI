@@ -4,9 +4,11 @@ import (
 	"SadApp/src/database"
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
-	"github.com/gofiber/fiber/v2"
+	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func Events(c *fiber.Ctx) error {
@@ -124,6 +126,23 @@ func CreateEvent(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "不正なリクエストです。",
 		})
+	}
+
+	// 画像ファイルの取得
+	file, err := c.FormFile("image")
+	if err == nil {
+		// 画像の保存先パスを生成
+		imagePath := filepath.Join("src/uploads", file.Filename)
+
+		// 画像をサーバー上に保存
+		if err := c.SaveFile(file, imagePath); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "画像の保存に失敗しました。",
+			})
+		}
+
+		// 画像のURLを生成し、Postに割り当てます
+		event.Image = "/" + imagePath
 	}
 
 	// イベントタイトルのバリデーション
