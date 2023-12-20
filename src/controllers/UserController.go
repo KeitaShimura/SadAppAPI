@@ -4,6 +4,7 @@ import (
 	"SadApp/src/database"
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
+	"path/filepath"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -117,10 +118,48 @@ func UpdateUser(c *fiber.Ctx) error {
 	}
 
 	// ミドルウェアを通じて現在のユーザーIDを取得
-	id, _ := middlewares.GetUserId(c)
-
+	id, err := middlewares.GetUserId(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "ユーザーIDの取得に失敗しました。",
+		})
+	}
 	// 更新するユーザーのデータを取得するためのUserモデルのインスタンスを作成
 	var user models.User
+
+	// 画像ファイル（icon）の取得
+	iconFile, err := c.FormFile("icon")
+	if err == nil {
+		// 画像の保存先パスを生成
+		iconPath := filepath.Join("src/uploads", iconFile.Filename)
+
+		// 画像をサーバー上に保存
+		if err := c.SaveFile(iconFile, iconPath); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "アイコン画像の保存に失敗しました。",
+			})
+		}
+
+		// 画像のURLを生成し、userに割り当てる
+		user.Icon = "/" + iconPath
+	}
+
+	// 画像ファイル（banner）の取得
+	bannerFile, err := c.FormFile("banner")
+	if err == nil {
+		// 画像の保存先パスを生成
+		bannerPath := filepath.Join("src/uploads", bannerFile.Filename)
+
+		// 画像をサーバー上に保存
+		if err := c.SaveFile(bannerFile, bannerPath); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "バナー画像の保存に失敗しました。",
+			})
+		}
+
+		// 画像のURLを生成し、userに割り当てる
+		user.Banner = "/" + bannerPath
+	}
 
 	// データベースからIDに基づいてユーザー情報を取得
 	result := database.DB.Where("id = ?", id).First(&user)
@@ -139,13 +178,14 @@ func UpdateUser(c *fiber.Ctx) error {
 		"BirthDate": data["birth_date"],
 	}
 
-	// Icon と Banner がリクエストに含まれている場合のみ、これらを更新データに含める
-	if icon, ok := data["icon"]; ok {
-		updateData["Icon"] = icon
+	// Icon と Banner の更新
+	if user.Icon != "" {
+		updateData["Icon"] = user.Icon
 	}
-	if banner, ok := data["banner"]; ok {
-		updateData["Banner"] = banner
+	if user.Banner != "" {
+		updateData["Banner"] = user.Banner
 	}
+
 	// 一時変数のデータをユーザーデータに反映
 	database.DB.Model(&user).Updates(updateData)
 
