@@ -12,46 +12,46 @@ import (
 )
 
 func Posts(c *fiber.Ctx) error {
-    currentUserId, err := middlewares.GetUserId(c)
-    if err != nil {
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": "Error retrieving user ID",
-        })
-    }
+	currentUserId, err := middlewares.GetUserId(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error retrieving user ID",
+		})
+	}
 
-    // 現在のユーザーがフォローしているユーザーのIDを取得
-    var followers []models.Follow
-    database.DB.Where("following_id = ?", currentUserId).Find(&followers)
+	// 現在のユーザーがフォローしているユーザーのIDを取得
+	var followers []models.Follow
+	database.DB.Where("following_id = ?", currentUserId).Find(&followers)
 
-    // フォロワーのユーザーIDを抽出
-    var followerIds []uint
-    for _, follower := range followers {
-        followerIds = append(followerIds, follower.FollowerId)
-    }
+	// フォロワーのユーザーIDを抽出
+	var followerIds []uint
+	for _, follower := range followers {
+		followerIds = append(followerIds, follower.FollowerId)
+	}
 
-    // 現在のユーザーのIDもリストに含める
-    followerIds = append(followerIds, currentUserId)
+	// 現在のユーザーのIDもリストに含める
+	followerIds = append(followerIds, currentUserId)
 
-    // ページネーションパラメータを取得
-    page, pageSize := getPaginationParameters(c)
+	// ページネーションパラメータを取得
+	page, pageSize := getPaginationParameters(c)
 
-    // 現在のユーザーとそのフォロワーの投稿を取得
-    var posts []models.Post
-    result := database.DB.Where("user_id IN ?", followerIds).
-        Preload("User").
-        Order("created_at DESC").
-        Limit(pageSize).
-        Offset((page - 1) * pageSize).
-        Find(&posts)
+	// 現在のユーザーとそのフォロワーの投稿を取得
+	var posts []models.Post
+	result := database.DB.Where("user_id IN ?", followerIds).
+		Preload("User").
+		Order("created_at DESC").
+		Limit(pageSize).
+		Offset((page - 1) * pageSize).
+		Find(&posts)
 
-    if result.Error != nil {
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": "Cannot retrieve posts",
-        })
-    }
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Cannot retrieve posts",
+		})
+	}
 
-    // 投稿のリストをJSON形式で返す
-    return c.JSON(posts)
+	// 投稿のリストをJSON形式で返す
+	return c.JSON(posts)
 }
 
 func UserPosts(c *fiber.Ctx) error {
@@ -98,66 +98,66 @@ func GetPost(c *fiber.Ctx) error {
 }
 
 func CreatePost(c *fiber.Ctx) error {
-    // 最初にJWTトークンからユーザーIDを取得します
-    userId, err := middlewares.GetUserId(c)
-    if err != nil {
-        // ユーザーIDを取得できない場合はエラーを返します
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-            "error": "認証に失敗しました。",
-        })
-    }
+	// 最初にJWTトークンからユーザーIDを取得します
+	userId, err := middlewares.GetUserId(c)
+	if err != nil {
+		// ユーザーIDを取得できない場合はエラーを返します
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "認証に失敗しました。",
+		})
+	}
 
-    // 新しいPost構造体を初期化します
-    var post models.Post
+	// 新しいPost構造体を初期化します
+	var post models.Post
 
-    // リクエストボディをPost構造体に解析します
-    if err := c.BodyParser(&post); err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": "不正なリクエストです。",
-        })
-    }
+	// リクエストボディをPost構造体に解析します
+	if err := c.BodyParser(&post); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "不正なリクエストです。",
+		})
+	}
 
-    // 画像ファイルの取得
-    file, err := c.FormFile("image")
-    if err == nil {
-        // 画像の保存先パスを生成
-        imagePath := filepath.Join("src/uploads", file.Filename)
+	// 画像ファイルの取得
+	file, err := c.FormFile("image")
+	if err == nil {
+		// 画像の保存先パスを生成
+		imagePath := filepath.Join("src/uploads", file.Filename)
 
-        // 画像をサーバー上に保存
-        if err := c.SaveFile(file, imagePath); err != nil {
-            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-                "error": "画像の保存に失敗しました。",
-            })
-        }
+		// 画像をサーバー上に保存
+		if err := c.SaveFile(file, imagePath); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "画像の保存に失敗しました。",
+			})
+		}
 
-        // 画像のURLを生成し、Postに割り当てます
-        post.Image = "/" + imagePath
-    }
+		// 画像のURLを生成し、Postに割り当てます
+		post.Image = "/" + imagePath
+	}
 
-    content := strings.TrimSpace(post.Content)
-    if len(content) == 0 || len(content) > 500 {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": "コメントは1文字以上500文字以下である必要があります。",
-        })
-    }
+	content := strings.TrimSpace(post.Content)
+	if len(content) == 0 || len(content) > 500 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "コメントは1文字以上500文字以下である必要があります。",
+		})
+	}
 
-    // 取得したユーザーIDをPostに割り当てます
-    post.UserId = userId // PostモデルにUserIdフィールドがあると仮定しています
+	// 取得したユーザーIDをPostに割り当てます
+	post.UserId = userId // PostモデルにUserIdフィールドがあると仮定しています
 
-    // データベースにPostを作成します
-    result := database.DB.Create(&post)
-    if result.Error != nil {
-        // 作成時のエラーを処理します
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": "投稿の作成に失敗しました。",
-        })
-    }
+	// データベースにPostを作成します
+	result := database.DB.Create(&post)
+	if result.Error != nil {
+		// 作成時のエラーを処理します
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "投稿の作成に失敗しました。",
+		})
+	}
 
-    // 作成された投稿のUserデータを読み込みます
-    database.DB.Preload("User").Find(&post, post.Id)
+	// 作成された投稿のUserデータを読み込みます
+	database.DB.Preload("User").Find(&post, post.Id)
 
-    // 作成された投稿をJSON形式で返します
-    return c.JSON(post)
+	// 作成された投稿をJSON形式で返します
+	return c.JSON(post)
 }
 
 func UpdatePost(c *fiber.Ctx) error {

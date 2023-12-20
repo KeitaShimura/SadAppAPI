@@ -17,6 +17,7 @@ func main() {
 
 	// 新しいFiberアプリケーションのインスタンスを作成します。
 	app := fiber.New()
+	app.Static("/src/uploads", "./src/uploads")
 
 	app.Use(cors.New(cors.Config{
 		AllowCredentials: true,
