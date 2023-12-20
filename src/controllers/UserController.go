@@ -72,46 +72,51 @@ func GetUser(c *fiber.Ctx) error {
 
 // UpdateUser 関数は、ユーザー情報を更新するための関数です。
 func UpdateUser(c *fiber.Ctx) error {
-	// リクエストボディからデータを読み込むためのマップを定義
-	var data map[string]string
+	name := c.FormValue("name")
+	email := c.FormValue("email")
+	bio := c.FormValue("bio")
+	location := c.FormValue("location")
+	website := c.FormValue("website")
+	birthDate := c.FormValue("birth_date")
 
-	// リクエストボディの解析。エラーがあれば返す
-	if err := c.BodyParser(&data); err != nil {
-		return err
-	}
-
-	// ユーザーデータのバリデーション
-	if len(data["name"]) < 1 || len(data["name"]) > 255 {
+	// 各フィールドのバリデーション
+	if len(name) < 1 || len(name) > 255 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "ユーザー名は1文字以上255文字以下である必要があります。",
 		})
 	}
 
-	if len(data["email"]) < 1 || len(data["email"]) > 255 {
+	// ユーザーデータのバリデーション
+	if len(name) < 1 || len(name) > 255 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "ユーザー名は1文字以上255文字以下である必要があります。",
+		})
+	}
+
+	if len(email) < 1 || len(email) > 255 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "メールアドレスは1文字以上255文字以下である必要があります。",
 		})
 	}
-
-	if len(data["bio"]) > 1000 {
+	if len(bio) > 1000 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "自己紹介文は1000文字以下である必要があります。",
 		})
 	}
 
-	if len(data["location"]) > 255 {
+	if len(location) > 255 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "居住地のURは255文字以下である必要があります。",
 		})
 	}
 
-	if len(data["website"]) > 255 {
+	if len(website) > 255 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "ウェブサイトのURLは255文字以下である必要があります。",
 		})
 	}
 
-	if len(data["birth_date"]) > 255 {
+	if len(birthDate) > 255 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "生年月日は255文字以下である必要があります。",
 		})
@@ -127,38 +132,28 @@ func UpdateUser(c *fiber.Ctx) error {
 	// 更新するユーザーのデータを取得するためのUserモデルのインスタンスを作成
 	var user models.User
 
-	// 画像ファイル（icon）の取得
-	iconFile, err := c.FormFile("icon")
-	if err == nil {
-		// 画像の保存先パスを生成
-		iconPath := filepath.Join("src/uploads", iconFile.Filename)
-
-		// 画像をサーバー上に保存
+	// アイコン画像の取得と保存
+	iconPath := ""
+	iconFile, iconErr := c.FormFile("icon")
+	if iconErr == nil {
+		iconPath = filepath.Join("src/uploads", iconFile.Filename)
 		if err := c.SaveFile(iconFile, iconPath); err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"error": "アイコン画像の保存に失敗しました。",
 			})
 		}
-
-		// 画像のURLを生成し、userに割り当てる
-		user.Icon = "/" + iconPath
 	}
 
-	// 画像ファイル（banner）の取得
-	bannerFile, err := c.FormFile("banner")
-	if err == nil {
-		// 画像の保存先パスを生成
-		bannerPath := filepath.Join("src/uploads", bannerFile.Filename)
-
-		// 画像をサーバー上に保存
+	// バナー画像の取得と保存
+	bannerPath := ""
+	bannerFile, bannerErr := c.FormFile("banner")
+	if bannerErr == nil {
+		bannerPath = filepath.Join("src/uploads", bannerFile.Filename)
 		if err := c.SaveFile(bannerFile, bannerPath); err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"error": "バナー画像の保存に失敗しました。",
 			})
 		}
-
-		// 画像のURLを生成し、userに割り当てる
-		user.Banner = "/" + bannerPath
 	}
 
 	// データベースからIDに基づいてユーザー情報を取得
@@ -170,20 +165,20 @@ func UpdateUser(c *fiber.Ctx) error {
 
 	// リクエストデータから更新対象のユーザーデータを一時変数に格納
 	updateData := map[string]interface{}{
-		"Name":      data["name"],
-		"Email":     data["email"],
-		"Bio":       data["bio"],
-		"Location":  data["location"],
-		"WebSite":   data["website"],
-		"BirthDate": data["birth_date"],
+		"Name":      name,
+		"Email":     email,
+		"Bio":       bio,
+		"Location":  location,
+		"WebSite":   website,
+		"BirthDate": birthDate,
 	}
 
-	// Icon と Banner の更新
-	if user.Icon != "" {
-		updateData["Icon"] = user.Icon
+	// Icon と Banner のパスを更新
+	if iconPath != "" {
+		updateData["Icon"] = "/" + iconPath
 	}
-	if user.Banner != "" {
-		updateData["Banner"] = user.Banner
+	if bannerPath != "" {
+		updateData["Banner"] = "/" + bannerPath
 	}
 
 	// 一時変数のデータをユーザーデータに反映
