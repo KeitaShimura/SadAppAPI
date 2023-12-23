@@ -2,3 +2,4 @@ docker-compose.yaml
 docker-compose.local.yaml
 .dbdata
 tmp
+.env
