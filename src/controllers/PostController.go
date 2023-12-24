@@ -102,74 +102,79 @@ func GetPost(c *fiber.Ctx) error {
 
 // CreatePost - 投稿を作成する関数
 func CreatePost(c *fiber.Ctx) error {
-    // JWTトークンからユーザーIDを取得
-    userId, err := middlewares.GetUserId(c)
-    if err != nil {
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-            "error": "認証に失敗しました。",
-        })
-    }
+	// JWTトークンからユーザーIDを取得
+	userId, err := middlewares.GetUserId(c)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "認証に失敗しました。",
+		})
+	}
 
-    // Post構造体の初期化
-    var post models.Post
+	// Post構造体の初期化
+	var post models.Post
 
-    // リクエストボディを解析
-    if err := c.BodyParser(&post); err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": "不正なリクエストです。",
-        })
-    }
+	// リクエストボディを解析
+	if err := c.BodyParser(&post); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "不正なリクエストです。",
+		})
+	}
 
-    // 画像ファイルの処理
-    file, err := c.FormFile("image")
-    if err == nil {
-        // 安全なファイル名の生成
-        fileName := filepath.Base(file.Filename)
-        safeFileName := fmt.Sprintf("%d-%s", time.Now().Unix(), fileName)
+	// 画像ファイルの処理
+	file, err := c.FormFile("image")
+	if err == nil {
+		// 安全なファイル名の生成
+		fileName := filepath.Base(file.Filename)
+		safeFileName := fmt.Sprintf("%d-%s", time.Now().Unix(), fileName)
 
-        // 保存先パスの生成
-        imagePath := filepath.Join("src/uploads", safeFileName)
+		// 保存先パスの生成
+		imagePath := filepath.Join("src/uploads", safeFileName)
 
-        // ディレクトリの存在確認と作成
-        if _, err := os.Stat("src/uploads"); os.IsNotExist(err) {
-            os.Mkdir("src/uploads", 0755)
-        }
+		// ディレクトリの存在確認と作成
+		if _, err := os.Stat("src/uploads"); os.IsNotExist(err) {
+			// ディレクトリ作成時のエラーチェックを追加
+			if err := os.Mkdir("src/uploads", 0755); err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"error": "画像保存用のディレクトリの作成に失敗しました。",
+				})
+			}
+		}
 
-        // 画像の保存
-        if err := c.SaveFile(file, imagePath); err != nil {
-            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-                "error": "画像の保存に失敗しました。",
-            })
-        }
+		// 画像の保存
+		if err := c.SaveFile(file, imagePath); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "画像の保存に失敗しました。",
+			})
+		}
 
-        // 画像のURLをPostに割り当て
-        post.Image = "/" + imagePath
-    }
+		// 画像のURLをPostに割り当て
+		post.Image = "/" + imagePath
+	}
 
-    // コメントの検証
-    content := strings.TrimSpace(post.Content)
-    if len(content) == 0 || len(content) > 500 {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": "コメントは1文字以上500文字以下である必要があります。",
-        })
-    }
+	// コメントの検証
+	content := strings.TrimSpace(post.Content)
+	if len(content) == 0 || len(content) > 500 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "コメントは1文字以上500文字以下である必要があります。",
+		})
+	}
 
-    // ユーザーIDをPostに割り当て
-    post.UserId = userId
+	// ユーザーIDをPostに割り当て
+	post.UserId = userId
 
-    // データベースにPostを保存
-    result := database.DB.Create(&post)
-    if result.Error != nil {
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": "投稿の作成に失敗しました。",
-        })
-    }
+	// データベースにPostを保存
+	result := database.DB.Create(&post)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "投稿の作成に失敗しました。",
+		})
+	}
 
-    // 作成された投稿のUserデータを読み込み
-    database.DB.Preload("User").Find(&post, post.Id)
+	// 作成された投稿のUserデータを読み込み
+	database.DB.Preload("User").Find(&post, post.Id)
 
-    // 作成された投稿をJSON形式で返す
-    return c.JSON(post)
+	// 作成された投稿をJSON形式で返す
+	return c.JSON(post)
 }
 
 func UpdatePost(c *fiber.Ctx) error {
