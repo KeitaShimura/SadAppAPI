@@ -4,9 +4,12 @@ import (
 	"SadApp/src/database"
 	"SadApp/src/middlewares"
 	"SadApp/src/models"
+	"fmt"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -128,22 +131,36 @@ func CreateEvent(c *fiber.Ctx) error {
 		})
 	}
 
-	// 画像ファイルの取得
-	file, err := c.FormFile("image")
-	if err == nil {
-		// 画像の保存先パスを生成
-		imagePath := filepath.Join("src/uploads", file.Filename)
+    // 画像ファイルの処理
+    file, err := c.FormFile("image")
+    if err == nil {
+        // 安全なファイル名の生成
+        fileName := filepath.Base(file.Filename)
+        safeFileName := fmt.Sprintf("%d-%s", time.Now().Unix(), fileName)
 
-		// 画像をサーバー上に保存
-		if err := c.SaveFile(file, imagePath); err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": "画像の保存に失敗しました。",
-			})
-		}
+        // 保存先パスの生成
+        imagePath := filepath.Join("src/uploads", safeFileName)
 
-		// 画像のURLを生成し、Postに割り当てます
-		event.Image = "/" + imagePath
-	}
+        // ディレクトリの存在確認と作成
+        if _, err := os.Stat("src/uploads"); os.IsNotExist(err) {
+            if err := os.Mkdir("src/uploads", 0755); err != nil {
+                return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+                    "error": "画像保存用のディレクトリの作成に失敗しました。",
+                })
+            }
+        }
+
+        // 画像の保存
+        if err := c.SaveFile(file, imagePath); err != nil {
+            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+                "error": "画像の保存に失敗しました。",
+            })
+        }
+
+        // 画像のURLをイベントに割り当て
+        event.Image = "/" + imagePath
+    }
+
 
 	// イベントタイトルのバリデーション
 	if len(event.Title) == 0 || len(event.Title) > 100 {
@@ -170,19 +187,19 @@ func CreateEvent(c *fiber.Ctx) error {
 	// Assign the retrieved user ID to the event
 	event.UserId = userId // Assuming your event model has a UserId field
 
-	// Create the event in the database
-	result := database.DB.Create(&event)
-	if result.Error != nil {
-		// If there's an error during the creation, return the error
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "イベントを作成できませんでした。",
-		})
-	}
+    // データベースにイベントを保存
+    result := database.DB.Create(&event)
+    if result.Error != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "error": "イベントを作成できませんでした。",
+        })
+    }
 
-	database.DB.Preload("User").Find(&event, event.Id)
+    // 作成されたイベントのUserデータを読み込み
+    database.DB.Preload("User").Find(&event, event.Id)
 
-	// Return the created event as JSON
-	return c.JSON(event)
+    // 作成されたイベントをJSON形式で返す
+    return c.JSON(event)
 }
 
 func UpdateEvent(c *fiber.Ctx) error {
