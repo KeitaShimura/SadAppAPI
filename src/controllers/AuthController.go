@@ -201,7 +201,7 @@ func setTokenCookie(c *fiber.Ctx, token string) {
 		Expires:  time.Now().Add(time.Hour * 24),
 		Secure:   true,
 		HTTPOnly: true,
-		SameSite: "Lax",  // SameSiteをLaxに変更
+		SameSite: "Lax", // SameSiteをLaxに変更
 	}
 	c.Cookie(&cookie)
 }

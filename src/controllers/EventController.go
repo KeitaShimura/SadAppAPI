@@ -121,7 +121,6 @@ func CreateEvent(c *fiber.Ctx) error {
 		})
 	}
 
-	
 	// 新しいイベント構造体を初期化
 	var event models.Event
 
