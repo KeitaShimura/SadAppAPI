@@ -183,6 +183,16 @@ func CreateEvent(c *fiber.Ctx) error {
 		})
 	}
 
+	parsedDate, err := time.Parse("2006-01-02T15:04", event.EventDate)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "イベント日時の形式が正しくありません。",
+		})
+	}
+
+	// Format the date
+	event.EventDate = parsedDate.Format("2006-01-02 15:04:05")
+
 	// Assign the retrieved user ID to the event
 	event.UserId = userId // Assuming your event model has a UserId field
 
