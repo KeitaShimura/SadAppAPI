@@ -121,6 +121,7 @@ func CreateEvent(c *fiber.Ctx) error {
 		})
 	}
 
+	
 	// 新しいイベント構造体を初期化
 	var event models.Event
 
@@ -182,20 +183,6 @@ func CreateEvent(c *fiber.Ctx) error {
 			"error": "コメントは1文字以上500文字以下である必要があります。",
 		})
 	}
-
-	eventDateString := strings.TrimSpace(event.EventDate)
-
-	// Parse the event date
-	parsedDate, err := time.Parse(time.RFC3339, eventDateString)
-	if err != nil {
-		// Log the error and the string that failed to parse
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid date format.",
-		})
-	}
-
-	// Format the date to the desired format
-	event.EventDate = parsedDate.Format("2006-01-02 15:04:05")
 
 	// Assign the retrieved user ID to the event
 	event.UserId = userId // Assuming your event model has a UserId field
