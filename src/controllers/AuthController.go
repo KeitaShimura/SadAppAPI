@@ -195,15 +195,15 @@ func createJWTToken(user models.User) (string, error) {
 
 // JWTトークンをクッキーに設定する関数
 func setTokenCookie(c *fiber.Ctx, token string) {
-    cookie := fiber.Cookie{
-        Name:     "jwt",
-        Value:    token,
-        Expires:  time.Now().Add(time.Hour * 24),
-        Secure:   true,      // HTTPS経由でのみクッキーを送信
-        HTTPOnly: true,      // JavaScriptからクッキーへのアクセスを防ぐ
-        SameSite: "None",    // クロスサイトリクエストでのクッキー送信を許可
-    }
-    c.Cookie(&cookie)
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
+		Secure:   true,   // HTTPS経由でのみクッキーを送信
+		HTTPOnly: true,   // JavaScriptからクッキーへのアクセスを防ぐ
+		SameSite: "None", // クロスサイトリクエストでのクッキー送信を許可
+	}
+	c.Cookie(&cookie)
 }
 
 // レスポンスの準備をする関数
