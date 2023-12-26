@@ -193,7 +193,7 @@ func CreateEvent(c *fiber.Ctx) error {
 			"error": "Invalid date format.",
 		})
 	}
-	
+
 	// Format the date to the desired format
 	event.EventDate = parsedDate.Format("2006-01-02 15:04:05")
 
