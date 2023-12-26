@@ -199,12 +199,14 @@ func setTokenCookie(c *fiber.Ctx, token string) {
 		Name:     "jwt",
 		Value:    token,
 		Expires:  time.Now().Add(time.Hour * 24),
-		Secure:   true,   // HTTPS経由でのみクッキーを送信
-		HTTPOnly: true,   // JavaScriptからクッキーへのアクセスを防ぐ
-		SameSite: "None", // クロスサイトリクエストでのクッキー送信を許可
+		Secure:   true,
+		HTTPOnly: true,
+		SameSite: "None",
+		Domain:   "https://cocolo-talk.vercel.app", // ここにドメインを指定
 	}
 	c.Cookie(&cookie)
 }
+
 
 // レスポンスの準備をする関数
 func prepareResponse(user models.User, token string) interface{} {
