@@ -183,14 +183,18 @@ func CreateEvent(c *fiber.Ctx) error {
 		})
 	}
 
-	parsedDate, err := time.Parse("2006-01-02T15:04", event.EventDate)
+	eventDateString := strings.TrimSpace(event.EventDate)
+
+	// Parse the event date
+	parsedDate, err := time.Parse(time.RFC3339, eventDateString)
 	if err != nil {
+		// Log the error and the string that failed to parse
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "イベント日時の形式が正しくありません。",
+			"error": "Invalid date format.",
 		})
 	}
-
-	// Format the date
+	
+	// Format the date to the desired format
 	event.EventDate = parsedDate.Format("2006-01-02 15:04:05")
 
 	// Assign the retrieved user ID to the event
