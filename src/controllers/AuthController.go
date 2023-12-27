@@ -199,9 +199,7 @@ func setTokenCookie(c *fiber.Ctx, token string) {
 		Name:     "jwt",
 		Value:    token,
 		Expires:  time.Now().Add(time.Hour * 24),
-		Secure:   true,
 		HTTPOnly: true,
-		SameSite: "None",
 	}
 	c.Cookie(&cookie)
 }
