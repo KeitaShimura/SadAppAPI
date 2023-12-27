@@ -200,6 +200,7 @@ func setTokenCookie(c *fiber.Ctx, token string) {
 		Value:    token,
 		Expires:  time.Now().Add(time.Hour * 24),
 		HTTPOnly: true,
+		SameSite: "Strict",
 	}
 	c.Cookie(&cookie)
 }
