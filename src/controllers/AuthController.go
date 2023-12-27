@@ -202,7 +202,6 @@ func setTokenCookie(c *fiber.Ctx, token string) {
 		Secure:   true,
 		HTTPOnly: true,
 		SameSite: "None",
-		Domain:   "https://cocolo-talk.vercel.app", // ここにドメインを指定
 	}
 	c.Cookie(&cookie)
 }
