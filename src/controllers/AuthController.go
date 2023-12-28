@@ -77,7 +77,7 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	// JWTトークンをクッキーに設定
-	setTokenCookie(c, token)
+	// setTokenCookie(c, token)
 
 	// レスポンスの準備
 	response := prepareResponse(user, token)
@@ -135,7 +135,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// クッキーにJWTトークンを設定する。
-	setTokenCookie(c, token)
+	// setTokenCookie(c, token)
 
 	// ユーザーデータにトークンを追加したJSONを作成
 	response := prepareResponse(user, token)
@@ -161,15 +161,15 @@ func GetAuthUser(c *fiber.Ctx) error {
 func Logout(c *fiber.Ctx) error {
 	// 新しいクッキーを作成し、名前を"jwt"に設定
 	// 値を空にし、有効期限を過去の時間に設定することでクッキーを削除
-	cookie := fiber.Cookie{
-		Name:     "jwt",                      // クッキーの名前
-		Value:    "",                         // クッキーの値を空に設定
-		Expires:  time.Now().Add(-time.Hour), // 有効期限を過去に設定してクッキーを無効化
-		HTTPOnly: true,                       // JavaScriptからのアクセスを防ぐための設定
-	}
+	// cookie := fiber.Cookie{
+	// 	Name:     "jwt",                      // クッキーの名前
+	// 	Value:    "",                         // クッキーの値を空に設定
+	// 	Expires:  time.Now().Add(-time.Hour), // 有効期限を過去に設定してクッキーを無効化
+	// 	HTTPOnly: true,                       // JavaScriptからのアクセスを防ぐための設定
+	// }
 
-	// 設定したクッキーをレスポンスに追加
-	c.Cookie(&cookie)
+	// // 設定したクッキーをレスポンスに追加
+	// c.Cookie(&cookie)
 
 	// ログアウト成功のメッセージをJSON形式で返す
 	return c.JSON(fiber.Map{
@@ -194,17 +194,16 @@ func createJWTToken(user models.User) (string, error) {
 }
 
 // JWTトークンをクッキーに設定する関数
-func setTokenCookie(c *fiber.Ctx, token string) {
-	cookie := fiber.Cookie{
-		Name:     "jwt",
-		Value:    token,
-		Expires:  time.Now().Add(time.Hour * 24),
-		HTTPOnly: true,
-		SameSite: "Lax",
-	}
-	c.Cookie(&cookie)
-}
-
+// func setTokenCookie(c *fiber.Ctx, token string) {
+// 	cookie := fiber.Cookie{
+// 		Name:     "jwt",
+// 		Value:    token,
+// 		Expires:  time.Now().Add(time.Hour * 24),
+// 		HTTPOnly: true,
+// 		SameSite: "Lax",
+// 	}
+// 	c.Cookie(&cookie)
+// }
 
 // レスポンスの準備をする関数
 func prepareResponse(user models.User, token string) interface{} {
