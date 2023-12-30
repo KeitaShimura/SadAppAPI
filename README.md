@@ -22,9 +22,6 @@
         <a href="https://www.docker.com/" target="_blank">
             <img src="https://img.shields.io/badge/-Docker-2496ED.svg?logo=docker&style=flat-square&logoColor=white" alt="Docker Badge">
         </a>
-        <a href="https://cloud.google.com/" target="_blank">
-            <img src="https://img.shields.io/badge/-Google_Cloud-4285F4.svg?logo=google-cloud&style=flat-square&logoColor=white" alt="GCP Badge">
-        </a>
         <a href="https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment" target="_blank">
             <img src="https://img.shields.io/badge/-CI%2FCD-2088FF.svg?style=flat-square" alt="CI/CD Badge">
         </a>
