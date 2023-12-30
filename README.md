@@ -28,18 +28,18 @@
         <a href="https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment" target="_blank">
             <img src="https://img.shields.io/badge/-CI%2FCD-2088FF.svg?style=flat-square" alt="CI/CD Badge">
         </a>
-        <a href="https://example.com/" target="_blank">
+        <a href="" target="_blank">
             <img src="https://img.shields.io/badge/-Test-00BFFF.svg?logo=testinglibrary&style=flat-square&logoColor=white" alt="Test Badge">
         </a>
     　　　　　　　　<a href="https://render.com/" target="_blank">
-    　　　　　　　　　　　　　　　　　<img src="https://render.com/images/logo.svg" alt="Render.com Logo">
+    　　　　　　　　　　　　　　　　　<img src="https://render.com/images/logo.svg" alt="Render.com Logo" />
 　　　　　　　　　　　　　　　</a>
 
 　　　　　　　　　　　　　　　<a href="https://vercel.com/" target="_blank">
-    　　　　　　　　　　　　　　　<img src="https://vercel.com/api/v1/logo?color=black" alt="Vercel Logo">
-　　　　　　　　　　　　　　　　</a>
+    　　　　　　　　　　　　　　　<img src="https://vercel.com/api/v1/logo?color=black" alt="Vercel Logo" />
+　　　　　　　　　　　　　　　</a>
 
-    </p>
+</p>
 
 <h2>サービス概要</h2>
 <p>COCOLOTalkは「対人恐怖症、社交不安障害（SAD）の方のお悩みを解決したい！」という想いから作られた、無料のSNSです。</p>
