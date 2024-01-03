@@ -22,6 +22,10 @@
         <a href="https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment" target="_blank">
             <img src="https://img.shields.io/badge/-CI%2FCD-2088FF.svg?style=flat-square" alt="CI/CD Badge">
         </a>
+
+https://github.com/KeitaShimura/SadAppAPI/assets/124238548/09bc8897-3745-4161-8089-21ed2c42b08b
+
+
 </p>
 <h2>サービス概要</h2>
 <p>COCOLOTalkは「対人恐怖症、社交不安障害（SAD）の方のお悩みを解決したい！」という想いから作られた、無料のSNSです。</p>
