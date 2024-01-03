@@ -34,7 +34,7 @@
     <table border="1">
         <tr>
             <th>アカウント登録</th>
-            <th>ヘッダ2</th>
+            <th>プロフィール編集</th>
             <th>ヘッダ3</th>
         </tr>
         <tr>
@@ -43,7 +43,7 @@
 ![画面収録 2024-01-04 1 49 05](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/050ab715-0a7c-4016-b8a0-6e11c2ccb2f9)
 
 　</td>
-            <td>セル1-2</td>
+            <td>![画面収録 2024-01-04 1 45 40](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/4dd5bf30-8b2f-40e7-9d70-7ac16ed2311b)</td>
             <td>セル1-3</td>
         </tr>
     </table>
