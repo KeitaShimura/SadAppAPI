@@ -32,7 +32,18 @@
 <p>自分と同じお悩みを持つ方に悩みを打ち明けることができます。</p>
 
 <h2>メイン機能の使い方</h2>
-
+    <table border="1">
+        <tr>
+            <th>アカウント登録</th>
+            <th>ヘッダ2</th>
+            <th>ヘッダ3</th>
+        </tr>
+        <tr>
+            <td>　[画面収録 2024-01-04 1.49.05.zip](https://github.com/KeitaShimura/SadAppAPI/files/13821430/2024-01-04.1.49.05.zip)　</td>
+            <td>セル1-2</td>
+            <td>セル1-3</td>
+        </tr>
+    </table>
 <h2>使用技術一覧</h2>
 
 - バックエンド: Go / Fiber
