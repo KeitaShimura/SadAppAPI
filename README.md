@@ -37,6 +37,7 @@
             <th>プロフィール編集</th>
             <th>タブ切り替え</th>
             <th>投稿</th>
+            <th>イベント投稿</th>
         </tr>
         <tr>
             <td>　
@@ -51,6 +52,7 @@
             ![画面収録 2024-01-04 1 45 12](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/6709f298-cf6c-49eb-9ebf-87f35d5043bf)
             </td>
             <td>![画面収録 2024-01-04 1 40 06 (1)](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/fa9e45a1-464a-4283-bf98-55bd73161794)</td>
+            <td>![画面収録 2024-01-04 1 40 48](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/cf94fa91-f239-4a36-b82f-22097b18c7cd)</td>
         </tr>
     </table>
 <h2>使用技術一覧</h2>
