@@ -59,7 +59,6 @@ https://github.com/KeitaShimura/SadAppAPI/assets/124238548/09bc8897-3745-4161-80
     </tr>
 </table>
 
-
 <h2>使用技術一覧</h2>
 
 - バックエンド: Go / Fiber
