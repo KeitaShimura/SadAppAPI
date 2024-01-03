@@ -1,7 +1,3 @@
-
-[画面収録 2024-01-04 1.49.05.mov.zip](https://github.com/KeitaShimura/SadAppAPI/files/13821806/2024-01-04.1.49.05.mov.zip)
-
-
 <h1>COCOLOTalk / 対人恐怖症の方ためのSNS</h1>
     <p>
         フロントエンドのリポジトリは<a href="https://github.com/KeitaShimura/SadAppClient" target="_blank">こちら</a>
@@ -42,7 +38,7 @@
     </tr>
     <tr>
         <td>
-            <img src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/edf14955-7e11-4f54-8289-9ab2a074d05e">
+            <img src="https://github.com/KeitaShimura/SadAppAPI/files/13821806/2024-01-04.1.49.05.mov.zip">
         </td>
         <td>
             <img src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/4dd5bf30-8b2f-40e7-9d70-7ac16ed2311b">
