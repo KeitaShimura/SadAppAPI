@@ -43,8 +43,12 @@
 ![画面収録 2024-01-04 1 49 05](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/050ab715-0a7c-4016-b8a0-6e11c2ccb2f9)
 
 　</td>
-            <td>![画面収録 2024-01-04 1 45 40](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/4dd5bf30-8b2f-40e7-9d70-7ac16ed2311b)</td>
-            <td>![画面収録 2024-01-04 1 45 12](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/6709f298-cf6c-49eb-9ebf-87f35d5043bf)</td>
+            <td>
+            ![画面収録 2024-01-04 1 45 40](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/4dd5bf30-8b2f-40e7-9d70-7ac16ed2311b)
+            </td>
+            <td>
+            ![画面収録 2024-01-04 1 45 12](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/6709f298-cf6c-49eb-9ebf-87f35d5043bf)
+            </td>
         </tr>
     </table>
 <h2>使用技術一覧</h2>
