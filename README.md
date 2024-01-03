@@ -8,7 +8,7 @@
 <h2>技術スタック</h2>
 <p>
         <a href="https://golang.org/" target="_blank">
-            <img src="https://img.shields.io/badge/-Go-00ADD8.svg?logo=go&style=flat-square&logoColor=white" alt="Go Badge">
+            <img src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/edf14955-7e11-4f54-8289-9ab2a074d05e" alt="Go Badge">
         </a>
         <a href="https://gofiber.io/" target="_blank">
             <img src="https://img.shields.io/badge/-Go_Fiber-88C0D0.svg?logo=gofiber&style=flat-square&logoColor=white" alt="Go-Fiber Badge">
