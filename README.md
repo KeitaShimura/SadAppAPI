@@ -39,7 +39,8 @@
             <th>ヘッダ3</th>
         </tr>
         <tr>
-            <td>　![画面収録 2024-01-04 1 49 05](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/d20a20ac-a093-4b46-8b50-6595beeb2c76)
+            <td>　![画面収録 2024-01-04 1 49 05](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/050ab715-0a7c-4016-b8a0-6e11c2ccb2f9)
+
 　</td>
             <td>セル1-2</td>
             <td>セル1-3</td>
