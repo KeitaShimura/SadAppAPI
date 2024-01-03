@@ -1,3 +1,7 @@
+
+![画面収録 2024-01-04 1 49 05](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/050ab715-0a7c-4016-b8a0-6e11c2ccb2f9)
+
+
 <h1>COCOLOTalk / 対人恐怖症の方ためのSNS</h1>
     <p>
         フロントエンドのリポジトリは<a href="https://github.com/KeitaShimura/SadAppClient" target="_blank">こちら</a>
@@ -26,7 +30,6 @@
             <img src="https://img.shields.io/badge/-CI%2FCD-2088FF.svg?style=flat-square" alt="CI/CD Badge">
         </a>
 </p>
-![画面収録 2024-01-04 1 49 05](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/d20a20ac-a093-4b46-8b50-6595beeb2c76)
 <h2>サービス概要</h2>
 <p>COCOLOTalkは「対人恐怖症、社交不安障害（SAD）の方のお悩みを解決したい！」という想いから作られた、無料のSNSです。</p>
 <p>自分と同じお悩みを持つ方に悩みを打ち明けることができます。</p>
