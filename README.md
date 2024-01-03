@@ -11,32 +11,8 @@
 <p>自分と同じお悩みを持つ方に悩みを打ち明けることができます。</p>
 
 <h2>メイン機能の使い方</h2>
-<table border="1">
-    <tr>
-        <th>アカウント登録</th>
-        <th>プロフィール編集</th>
-        <th>タブ切り替え</th>
-        <th>投稿</th>
-        <th>イベント投稿</th>
-    </tr>
-    <tr>
-        <td>
-            <img src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/050ab715-0a7c-4016-b8a0-6e11c2ccb2f9" width="1400" height="250">
-        </td>
-        <td>
-            <img src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/4dd5bf30-8b2f-40e7-9d70-7ac16ed2311b" width="1400" height="250">
-        </td>
-        <td>
-            <img src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/6709f298-cf6c-49eb-9ebf-87f35d5043bf" width="1400" height="250">
-        </td>
-        <td>
-            <img src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/fa9e45a1-464a-4283-bf98-55bd73161794" width="1400" height="250">
-        </td>
-        <td>
-            <img src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/cf94fa91-f239-4a36-b82f-22097b18c7cd" width="1400" height="250">
-        </td>
-    </tr>
-</table>
+![画面収録 2024-01-04 1 49 05 (1)](https://github.com/KeitaShimura/SadAppAPI/assets/124238548/1785d91e-8ece-4fb9-9909-3acce63bb6f9)
+
 
 <h2>使用技術一覧</h2>
 
