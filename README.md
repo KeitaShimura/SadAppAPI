@@ -38,7 +38,7 @@
     </tr>
     <tr>
         <td>
-            <img src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/050ab715-0a7c-4016-b8a0-6e11c2ccb2f9">
+            <img src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/edf14955-7e11-4f54-8289-9ab2a074d05e">
         </td>
         <td>
             <img src="https://github.com/KeitaShimura/SadAppAPI/assets/124238548/4dd5bf30-8b2f-40e7-9d70-7ac16ed2311b">
