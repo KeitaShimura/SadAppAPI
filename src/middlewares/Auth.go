@@ -12,35 +12,35 @@ import (
 // IsAuthenticated はリクエストが認証済みかどうかを確認するミドルウェアです。
 // JWT（Json Web Token）を使用して、ユーザーの認証状態を検証します。
 func IsAuthenticated(c *fiber.Ctx) error {
-    // Retrieve the JWT token from the Authorization header
-    authHeader := c.Get("Authorization")
-    if authHeader == "" {
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-            "message": "認証されていません。",
-        })
-    }
+	// Retrieve the JWT token from the Authorization header
+	authHeader := c.Get("Authorization")
+	if authHeader == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "認証されていません。",
+		})
+	}
 
-    tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-    if tokenString == authHeader {
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-            "message": "Bearer token not found",
-        })
-    }
+	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+	if tokenString == authHeader {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Bearer token not found",
+		})
+	}
 
-    // Parse the JWT token
-    token, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
-        return []byte("secret"), nil
-    })
+	// Parse the JWT token
+	token, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte("secret"), nil
+	})
 
-    // Check for validity
-    if err != nil || !token.Valid {
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-            "message": "Invalid token",
-        })
-    }
+	// Check for validity
+	if err != nil || !token.Valid {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Invalid token",
+		})
+	}
 
-    // Proceed to the next handler
-    return c.Next()
+	// Proceed to the next handler
+	return c.Next()
 }
 
 // GetUserId はリクエストからユーザーIDを取得するヘルパー関数です。
